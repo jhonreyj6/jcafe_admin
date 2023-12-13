@@ -5,7 +5,7 @@ import App from './components/App.vue'
 import router from './router'
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 import './helpers/axios'
-
+import './helpers/pusher'
 
 const app = createApp(App)
 
