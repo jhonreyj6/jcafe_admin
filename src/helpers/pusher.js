@@ -11,10 +11,10 @@ window.Echo = new Echo({
     encrypted: true,
     // added
     authEndpoint: import.meta.env.VITE_PUSHER_ENDPOINT,
-    auth: {
-      headers: {
-          // Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).access_token,
-          Authorization:  JSON.parse(localStorage.getItem('user')) ? 'Bearer ' + JSON.parse(localStorage.getItem('user')).access_token : 'null',
-      },
-    },
+    // auth: {
+    //   headers: {
+    //       // Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).access_token,
+    //       Authorization:  JSON.parse(localStorage.getItem('user')) ? 'Bearer ' + JSON.parse(localStorage.getItem('user')).access_token : 'null',
+    //   },
+    // },
 });
