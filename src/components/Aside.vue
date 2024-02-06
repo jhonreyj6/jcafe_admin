@@ -1,5 +1,5 @@
 <template>
-    <div class=" w-auto md:w-64 fixed h-full z-10">
+    <div class="w-auto md:w-64 fixed h-full z-10">
         <div class="mt-16 relative h-full bg-slate-700">
             <div class="flex flex-col">
                 <div class="">

@@ -2,7 +2,7 @@
     <div>
         <Aside />
 
-        <div class="pt-20 px-4 ml-16 sm:ml-64">
+        <div class="pt-20 px-4 ml-16 md:ml-64">
             <div
                 class="relative overflow-x-auto overflow-y-clip shadow-md sm:rounded-lg p-8 border"
             >
