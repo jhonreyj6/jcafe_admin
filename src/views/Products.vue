@@ -14,12 +14,12 @@
                 </div>
 
                 <div
-                    class="grid grid-cols-3 gap-2"
+                    class="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-2"
                 >
                     <div class="mb-4" v-for="product in products.data"
                     :key="product.id">
                         <div
-                            class="flex flex-row max-w-md bg-white shadow-lg rounded-lg border overflow-hidden"
+                            class="flex flex-row bg-white shadow-lg rounded-lg border overflow-hidden"
                         >
                             <div
                                 class="w-44 h-44"
