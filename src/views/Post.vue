@@ -15,7 +15,7 @@
                             id="comment"
                             rows="8"
                             class="w-full mb-2 px-0 text-sm text-gray-900 bg-white border-0 focus:outline-none"
-                            placeholder="Write a comment..."
+                            placeholder="Write a post..."
                             required
                             v-model="form.post.message"
                         ></textarea>
@@ -95,6 +95,7 @@
                                 <input
                                     type="file"
                                     ref="attachFiles"
+                                    id="attachFiles"
                                     class="hidden"
                                     @change="morphAttachFiles"
                                     multiple
@@ -657,13 +658,18 @@ export default {
                     },
                 })
                 .then((res) => {
+                    console.log(this.$refs.attachFiles.files);
                     this.posts.data.unshift(res.data);
                     this.form.post.message = "";
-                    this.form.post.attachments.files.name = [];
                     this.form.post.attachments.images.temp_link = [];
+                    this.form.post.attachments.files.name = [];
+                    
+                    this.form.post.attachments.isExist = false;
+                    this.$refs.attachFiles.value = "";
+                    console.log('last');
                 })
                 .catch((err) => {
-                    console.log(err.response.data.message);
+                    // console.log(err.response);
                 });
         },
 
@@ -697,7 +703,6 @@ export default {
                 })
                 .catch((err) => {
                     this.timeout.pagination.post = 0;
-                    console.log(err.response.data.message);
                     reject(err);
                 })
             })
@@ -706,24 +711,21 @@ export default {
         
     },
 
-    // watch: {
-    //     $data: {
-    //         handler: function (val, oldVal) {
-    //             console.log("watcher: ", val);
-    //         },
-    //         deep: true,
-    //     },
+    watch: {
+        $data: {
+            handler: function (val, oldVal) {
+                console.log("watcher: ", val);
+            },
+            deep: true,
+        },
 
-    //     $props: {
-    //         handler: function (val, oldVal) {
-    //             console.log("watcher: ", val);
-    //         },
-    //         deep: true,
-    //     },
-    //     some_prop: function () {
-    //         //do something if some_prop updated
-    //     },
-    // },
+        $props: {
+            handler: function (val, oldVal) {
+                console.log("watcher: ", val);
+            },
+            deep: true,
+        },
+    },
 
     created() {
         window.addEventListener("scroll", this.handleScroll);
@@ -734,6 +736,7 @@ export default {
     beforeMounted() {},
 
     mounted() {
+        document.getElementById('comment').focus();
         this.getPost();
     },
 };

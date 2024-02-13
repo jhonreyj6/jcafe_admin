@@ -316,7 +316,7 @@ export default {
             window.Echo.private("chat." + this.currentRoom).listen(
                 ".message.new",
                 (e) => {
-                    vm.chat.collection.data.unshift(e.chat);
+                    vm.chat.collection.data.push(e.chat);
                 }
             );
         },
