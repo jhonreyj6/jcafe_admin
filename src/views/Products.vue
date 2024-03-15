@@ -3,77 +3,130 @@
         <Aside />
 
         <div class="md:ml-64 ml-16 max-w-7xl pt-20 px-4">
-            <div class="rounded" autocomplete="on">
-                <div class="mb-4">
-                    <button
-                        class="text-white bg-indigo-700 border-0 py-0.5 px-6 focus:outline-none hover:bg-indigo-600 rounded text-lg"
-                        @click="modal.addProduct = true"
-                    >
-                        <i class="fa-regular fa-plus mr-2 fa-lg"></i>Add Product
-                    </button>
-                </div>
-
-                <div
-                    class="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-2"
-                >
-                    <div class="mb-4" v-for="product in products.data"
-                    :key="product.id">
-                        <div
-                            class="flex flex-row bg-white shadow-lg rounded-lg border overflow-hidden"
+            <div
+                class="relative overflow-x-auto overflow-y-clip shadow-md sm:rounded-lg p-8 border"
+            >
+                <div class="flex items-center justify-between pb-4 bg-white">
+                    <Menu>
+                        <MenuButton
+                            class="text-white bg-indigo-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2.5 text-center inline-flex items-center"
+                            >Action</MenuButton
                         >
-                            <div
-                                class="w-44 h-44"
-                            >
-                                <img :src="product.image_url" alt="" class="w-full h-44">
-                            </div>
-
-                            <div class="w-full p-4 flex flex-col">
-                                <h1 class="text-gray-900 font-bold text-xl">
-                                    {{ product.name }}
-                                </h1>
-
-                                <div>
-                                    <Stars :counts="product.rating" />
-                                </div>
-
-                                <p class="text-gray-600 text-sm">
-                                    {{ product.description }}
-                                </p>
-                                <div
-                                    v-for="variant in product.get_variants"
-                                    :key="variant.id"
-                                    class="flex flex-row item-center gap-2"
+                        <MenuItems
+                            class="z-10 bg-white absolute mt-32 divide-y divide-gray-100 shadow w-56"
+                        >
+                            <MenuItem>
+                                <a
+                                    class="block px-4 py-2 cursor-pointer hover:bg-indigo-50"
+                                    role="button"
+                                    @click="modal.addProduct = true"
                                 >
-                                    <h1 class="text-gray-700 font-bold text-sm">
-                                        ₱{{ variant.price }}
-                                    </h1>
-                                    <div class="text-gray-400 text-sm"> / {{ variant.stock }} stocks left</div>
-                                </div>
+                                    Add Product
+                                </a>
+                            </MenuItem>
+                            <MenuItem>
+                                <a
+                                    role="button"
+                                    class="block px-4 py-2 cursor-pointer hover:bg-indigo-50"
+                                    @click="modal.deleteProduct = true"
+                                    >Delete Product</a
+                                >
+                            </MenuItem>
+                        </MenuItems>
+                    </Menu>
 
-                                <div class="flex flex-row gap-2 mt-auto">
-                                    <button
-                                        class="text-white bg-indigo-700 border-0 py-0.5 px-3 focus:outline-none hover:bg-indigo-600 rounded"
-                                        @click="
-                                            (modal.updateProduct = true),
-                                                (modal.update_data = product)
-                                        "
-                                    >
-                                        Update
-                                    </button>
-                                    <button
-                                        class="text-white bg-red-700 border-0 py-0.5 px-3 focus:outline-none hover:bg-red-600 rounded"
-                                        @click="
-                                            (modal.deleteProduct = true),
-                                                (modal.delete_data = product)
-                                        "
-                                    >
-                                        Delete
-                                    </button>
-                                </div>
-                            </div>
+                    <label for="table-search-games" class="sr-only"
+                        >Search</label
+                    >
+                    <div class="relative">
+                        <div
+                            class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none"
+                        >
+                            <svg
+                                class="w-5 h-5 text-gray-500"
+                                aria-hidden="true"
+                                fill="currentColor"
+                                viewBox="0 0 20 20"
+                                xmlns="http://www.w3.org/2000/svg"
+                            >
+                                <path
+                                    fill-rule="evenodd"
+                                    d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                                    clip-rule="evenodd"
+                                ></path>
+                            </svg>
                         </div>
+                        <input
+                            type="text"
+                            id="table-search-games"
+                            class="block p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500"
+                            placeholder="Search Product"
+                        />
                     </div>
                 </div>
+                <table class="w-full text-sm text-left text-gray-500">
+                    <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+                        <tr>
+                            <th scope="col" class="p-4">
+                                <div class="flex items-center">
+                                    <input
+                                        id="checkbox-all"
+                                        ref="checkbox_all"
+                                        @change="selectAll($event)"
+                                        type="checkbox"
+                                        class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+                                    />
+                                    <label for="checkbox-all" class="sr-only"
+                                        >checkbox</label
+                                    >
+                                </div>
+                            </th>
+                            <th scope="col" class="px-2 py-3">ID</th>
+                            <th scope="col" class="px-6 py-3">Name</th>
+                            <th scope="col" class="px-6 py-3">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr
+                            class="bg-white border-b items-center hover:bg-gray-50"
+                            v-for="product in products.data"
+                            :key="product.id"
+                        >
+                            <td class="w-4 p-4">
+                                <div class="flex items-center">
+                                    <input
+                                        :value="product.id"
+                                        :id="product.id"
+                                        v-model="selected"
+                                        type="checkbox"
+                                        class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+                                    />
+                                    <label :for="product.id" class="sr-only"
+                                        >checkbox</label
+                                    >
+                                </div>
+                            </td>
+                            <td class="px-2 py-4">
+                                <div class="text-base text-dark font-semibold">
+                                    {{ product.id }}
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="text-base text-dark font-semibold">
+                                    {{ product.name }}
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <button
+                                    class="font-medium text-blue-600"
+                                    @click="modal.updateProduct = true; modal.update_data = product"
+                                >
+                                    Edit
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
 
                 <Pagination :data="products" />
             </div>
@@ -301,8 +354,9 @@
                                     >Name</label
                                 >
                                 <input
+                                    :value="modal.update_data.name"
                                     :placeholder="modal.update_data.name"
-                                    v-model="form.updateProduct.name"
+                                    ref="update_product_name"
                                     type="text"
                                     class="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
                                 />
@@ -314,7 +368,8 @@
                                 >
                                 <input
                                     :placeholder="modal.update_data.rating"
-                                    v-model="form.updateProduct.rating"
+                                    ref="update_product_rating"
+                                    :value="modal.update_data.rating"
                                     type="number"
                                     class="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
                                 />
@@ -327,8 +382,9 @@
                                     >Description</label
                                 >
                                 <textarea
-                                    v-model="form.updateProduct.description"
+                                    ref="update_product_description"
                                     :placeholder="modal.update_data.description"
+                                    :value="modal.update_data.description"
                                     class="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
                                 />
                             </div>
@@ -350,19 +406,20 @@
                         >
                             <div class="w-full">
                                 <input
-                                    :placeholder="variant.value"
+                                    placeholder="value"
                                     ref="variant_update_value"
                                     type="number"
                                     min="1"
-                                    max="5"
+                                    :value="variant.value"
                                     class="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
                                 />
                             </div>
 
                             <div class="w-full">
                                 <input
-                                ref="variant_update_unit"
-                                    :placeholder="variant.unit"
+                                    ref="variant_update_unit"
+                                    :value="variant.unit"
+                                    placeholder="unit"
                                     type="text"
                                     class="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
                                 />
@@ -371,10 +428,10 @@
                             <div class="w-full">
                                 <input
                                     ref="variant_update_price"
-                                    :placeholder="variant.price"
+                                    :value="variant.price"
+                                    placeholder="price"
                                     type="number"
                                     min="1"
-                                    max="5"
                                     class="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
                                 />
                             </div>
@@ -383,9 +440,8 @@
                                 <input
                                     type="number"
                                     ref="variant_update_stock"
-                                    :placeholder="variant.stock"
-                                    min="1"
-                                    max="5"
+                                    :value="variant.stock"
+                                    placeholder="stock"
                                     class="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
                                 />
                             </div>
@@ -476,7 +532,7 @@
                             <button
                                 type="button"
                                 class="inline-flex text-white bg-red-700 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded text-lg"
-                                @click="modal.addProduct = false"
+                                @click="modal.updateProduct = false"
                             >
                                 Cancel
                             </button>
@@ -540,6 +596,10 @@ import {
     DialogPanel,
     DialogTitle,
     DialogDescription,
+    Menu,
+    MenuButton,
+    MenuItems,
+    MenuItem,
 } from "@headlessui/vue";
 import { userStore } from "../stores/userStore";
 
@@ -549,13 +609,14 @@ export default {
             modal: {
                 addProduct: false,
                 deleteProduct: false,
-                delete_data: "",
+                // delete_data: "",
                 updateProduct: false,
                 update_data: "",
             },
-            collection: {
-                products: [],
-            },
+            selected: [],
+            // collection: {
+            //     products: [],
+            // },
             form: {
                 addProduct: {
                     name: "",
@@ -569,11 +630,11 @@ export default {
                     rating: "",
                 },
                 updateProduct: {
-                    name: "",
-                    stock: "",
+                    // name: "",
+                    // stock: "",
                     image: "",
-                    description: "",
-                    rating: "",
+                    // description: "",
+                    // rating: "",
                     temp_img: "",
                 },
             },
@@ -586,6 +647,11 @@ export default {
         DialogPanel,
         DialogTitle,
         DialogDescription,
+        Aside,
+        Menu,
+        MenuButton,
+        MenuItems,
+        MenuItem,
         Pagination,
         Stars,
     },
@@ -665,22 +731,23 @@ export default {
 
         updateProduct() {
             const formData = new FormData();
-            formData.append('name', this.form.updateProduct.name);
-            formData.append('rating', this.form.updateProduct.rating);
-            formData.append('description', this.form.updateProduct.description);
-            formData.append('image', this.form.updateProduct.image);
+            formData.append("id", this.modal.update_data.id);
+            formData.append("name", this.$refs.update_product_name.value);
+            formData.append("rating", this.$refs.update_product_rating.value);
+            formData.append("description", this.$refs.update_product_description.value);
+            formData.append("image", this.form.updateProduct.image);
 
-            this.$refs.variant_update_value.forEach(data => {
-                formData.append('variant_update_value[]', data.value);
+            this.$refs.variant_update_value.forEach((data) => {
+                formData.append("variant_update_value[]", data.value);
             });
-            this.$refs.variant_update_price.forEach(data => {
-                formData.append('variant_update_price[]', data.value);
+            this.$refs.variant_update_price.forEach((data) => {
+                formData.append("variant_update_price[]", data.value);
             });
-            this.$refs.variant_update_stock.forEach(data => {
-                formData.append('variant_update_stock[]', data.value);
+            this.$refs.variant_update_stock.forEach((data) => {
+                formData.append("variant_update_stock[]", data.value);
             });
-            this.$refs.variant_update_unit.forEach(data => {
-                formData.append('variant_update_unit[]', data.value);
+            this.$refs.variant_update_unit.forEach((data) => {
+                formData.append("variant_update_unit[]", data.value);
             });
 
             const AuthStr = "Bearer ".concat(userStore().user.access_token);
@@ -691,10 +758,15 @@ export default {
                 headers: { Authorization: AuthStr },
             })
                 .then((res) => {
-                    console.log(res.data);
+                    this.modal.updateProduct = false;
+                    this.products.data.forEach((product, index) => {
+                        if (product.id == this.modal.update_data.id) {
+                            this.products.data[index] = res.data;
+                        }
+                    });
                 })
                 .catch((err) => {
-                    console.log(err.response.data.message);
+                    console.log(err.response);
                 });
         },
 
@@ -702,18 +774,18 @@ export default {
             const AuthStr = "Bearer ".concat(userStore().user.access_token);
             axios({
                 method: "delete",
-                params: { id: this.modal.delete_data.id },
+                params: {
+                    id: this.selected,  
+                },
                 url: `/api/products`,
                 headers: { Authorization: AuthStr },
             })
                 .then((res) => {
-                    this.products.data.forEach((product, index) => {
-                        if (product.id == this.modal.delete_data.id) {
-                            this.products.data.splice(index, 1);
-                        }
+                    this.products.data = this.products.data.filter((product) => {
+                        return !this.selected.includes(product.id);
                     });
                     this.modal.deleteProduct = false;
-                    this.modal.delete_data = "";
+                    this.selected = [];
                 })
                 .catch((err) => {
                     console.log(err.response.data.message);
@@ -727,20 +799,20 @@ export default {
             formData.append("description", this.form.addProduct.description);
             formData.append("image", this.form.addProduct.image);
 
-            this.$refs.variant_value.forEach(data => {
-               formData.append('variant_value[]', data.value);
+            this.$refs.variant_value.forEach((data) => {
+                formData.append("variant_value[]", data.value);
             });
 
-            this.$refs.variant_unit.forEach(data => {
-               formData.append('variant_unit[]', data.value);
+            this.$refs.variant_unit.forEach((data) => {
+                formData.append("variant_unit[]", data.value);
             });
 
-            this.$refs.variant_stock.forEach(data => {
-               formData.append('variant_stock[]', data.value);
+            this.$refs.variant_stock.forEach((data) => {
+                formData.append("variant_stock[]", data.value);
             });
 
-            this.$refs.variant_price.forEach(data => {
-               formData.append('variant_price[]', data.value);
+            this.$refs.variant_price.forEach((data) => {
+                formData.append("variant_price[]", data.value);
             });
 
             const AuthStr = "Bearer ".concat(userStore().user.access_token);
@@ -797,26 +869,37 @@ export default {
                 this.form.updateProduct.image
             );
         },
+        
+        selectAll(e) {
+            if (e.target.checked) {
+                this.selected = [];
+                this.products.data.forEach((elem) => {
+                    this.selected.push(elem.id);
+                });
+            } else {
+                this.selected = [];
+            }
+        },
     },
 
-    // watch: {
-    //     $data: {
-    //         handler: function (val, oldVal) {
-    //             console.log("watcher: ", val);
-    //         },
-    //         deep: true,
-    //     },
+    watch: {
+        $data: {
+            handler: function (val, oldVal) {
+                console.log("watcher: ", val);
+            },
+            deep: true,
+        },
 
-    //     $props: {
-    //         handler: function (val, oldVal) {
-    //             console.log("watcher: ", val);
-    //         },
-    //         deep: true,
-    //     },
-    //     some_prop: function () {
-    //         //do something if some_prop updated
-    //     },
-    // },
+        $props: {
+            handler: function (val, oldVal) {
+                console.log("watcher: ", val);
+            },
+            deep: true,
+        },
+        some_prop: function () {
+            //do something if some_prop updated
+        },
+    },
 
     updated() {},
 

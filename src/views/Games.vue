@@ -148,7 +148,7 @@
             class="z-50 bg-opacity-50 absolute bg-black w-full p-4 overflow-x-hidden overflow-y-auto inset-0 h-[calc(100%-1rem)] max-h-full"
         >
             <DialogPanel
-                class="relative w-full max-w-5xl max-h-full justify-center mx-auto mt-24"
+                class="relative w-full max-w-5xl max-h-full justify-center mx-auto mt-8"
             >
                 <div class="relative bg-white rounded-lg shadow p-8">
                     <DialogTitle class="text-xl font-bold mb-4 border-b"
@@ -167,6 +167,11 @@
                                 v-model="form.addGames.name"
                                 class="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
                             />
+                        </div>
+                        
+                        <div class="flex flex-col gap-4 mb-4">
+                            <label for="description_add">Description</label>
+                            <textarea v-model="form.addGames.description" class="rounded-sm resize-none outline-offset-8 border focus:outline-none p-2" id="description_add" rows="6"></textarea>
                         </div>
 
                         <div class="flex flex-row gap-4 mb-4">
@@ -306,7 +311,7 @@
             class="z-50 bg-opacity-50 absolute bg-black w-full p-4 overflow-x-hidden overflow-y-auto inset-0 h-[calc(100%)] max-h-full"
         >
             <DialogPanel
-                class="relative w-full max-w-5xl max-h-full justify-center mx-auto mt-16 bg-white rounded-lg shadow p-8"
+                class="relative w-full max-w-5xl justify-center mx-auto mt-16 bg-white rounded-lg shadow p-8"
             >
                 <DialogTitle class="text-xl font-bold mb-4 border-b"
                     >Edit Game</DialogTitle
@@ -321,10 +326,16 @@
                         <input
                             type="text"
                             :placeholder="form.editGames.data.name"
-                            v-model="form.editGames.name"
+                            :value="form.editGames.data.name"
+                            ref="edit_game_name"
                             class="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
                         />
                     </div>
+                    
+                    <div class="flex flex-col gap-4 mb-4">
+                            <label for="description_edit">Description</label>
+                            <textarea ref="edit_game_description" :value="form.editGames.data.description" class="rounded-sm resize-none outline-offset-8 border focus:outline-none p-2" id="description_edit" rows="6"></textarea>
+                        </div>
 
                     <div class="flex flex-row gap-4 mb-4">
                         <div class="w-full">
@@ -336,7 +347,8 @@
                             <input
                                 type="text"
                                 :placeholder="form.editGames.data.genre"
-                                v-model="form.editGames.genre"
+                                :value="form.editGames.data.genre"
+                                ref="edit_game_genre"
                                 class="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
                             />
                         </div>
@@ -352,7 +364,8 @@
                                 min="1"
                                 max="5"
                                 :placeholder="form.editGames.data.rating"
-                                v-model="form.editGames.rating"
+                                :value="form.editGames.data.rating"
+                                ref="edit_game_rating"
                                 class="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
                             />
                         </div>
@@ -367,7 +380,8 @@
                         <input
                             type="url"
                             :placeholder="form.editGames.data.trailer_link"
-                            v-model="form.editGames.trailer_link"
+                            ref="edit_game_trailer_link"
+                            :value="form.editGames.data.trailer_link"
                             class="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
                         />
                     </div>
@@ -454,15 +468,12 @@ export default {
                     image: "",
                     rating: "",
                     temp_img: "",
+                    description: "",
                 },
 
                 editGames: {
                     data: "",
-                    name: "",
-                    genre: "",
-                    rating: "",
-                    trailer_link: "",
-                    editGames: "",
+                    image: "",
                 },
             },
         };
@@ -552,6 +563,7 @@ export default {
             formData.append("genre", this.form.addGames.genre);
             formData.append("trailer_link", this.form.addGames.trailer_link);
             formData.append("rating", this.form.addGames.rating);
+            formData.append("description", this.form.addGames.description);
 
             const AuthStr = "Bearer ".concat(userStore().user.access_token);
             axios
@@ -570,6 +582,8 @@ export default {
                     this.form.addGames.genre = "";
                     this.form.addGames.trailer_link = "";
                     this.form.addGames.rating = "";
+                    this.form.addGames.description = "";
+
                     this.form.addGames.temp_img = "";
                 })
                 .catch((err) => {
@@ -614,7 +628,7 @@ export default {
 
         selectAll(e) {
             if (e.target.checked) {
-                this.games.forEach((game) => {
+                this.games.data.forEach((game) => {
                     if (!this.selected_games.includes(game.id)) {
                         this.selected_games.push(game.id);
                     }
@@ -636,12 +650,10 @@ export default {
             })
                 .then((res) => {
                     // this.games = res.data;
-                    this.games.data.forEach((game, index) => {
-                        if (this.selected_games.includes(game.id)) {
-                            this.games.data.splice(index, 1);
-                        }
+                    this.games.data = this.games.data.filter((game) => {
+                        return !this.selected_games.includes(game.id);
                     });
-
+                    
                     this.selected_games = [];
                     this.$refs.checkbox_all.checked = false;
                 })
@@ -657,11 +669,12 @@ export default {
             }
 
             formData.append("id", this.form.editGames.data.id);
-            formData.append("name", this.form.editGames.name);
-            formData.append("genre", this.form.editGames.genre);
-            formData.append("trailer_link", this.form.editGames.trailer_link);
-            formData.append("rating", this.form.editGames.rating);
-
+            formData.append("name", this.$refs.edit_game_name.value);
+            formData.append("genre", this.$refs.edit_game_genre.value);
+            formData.append("trailer_link", this.$refs.edit_game_trailer_link.value);
+            formData.append("rating", this.$refs.edit_game_rating.value);
+            formData.append("description", this.$refs.edit_game_description.value);
+            
             const AuthStr = "Bearer ".concat(userStore().user.access_token);
             axios
                 .post(`/api/games/update`, formData, {
@@ -678,11 +691,6 @@ export default {
                     });
 
                     this.modal.editGames = false;
-                    this.form.editGames.name = "";
-                    this.form.editGames.image = "";
-                    this.form.editGames.genre = "";
-                    this.form.editGames.trailer_link = "";
-                    this.form.editGames.rating = "";
                 })
                 .catch((err) => {
                     console.log(err.response.data.message);
@@ -690,24 +698,24 @@ export default {
         },
     },
 
-    // watch: {
-    //     $data: {
-    //         handler: function (val, oldVal) {
-    //             console.log("watcher: ", val);
-    //         },
-    //         deep: true,
-    //     },
+    watch: {
+        $data: {
+            handler: function (val, oldVal) {
+                console.log("watcher: ", val);
+            },
+            deep: true,
+        },
 
-    //     $props: {
-    //         handler: function (val, oldVal) {
-    //             console.log("watcher: ", val);
-    //         },
-    //         deep: true,
-    //     },
-    //     some_prop: function () {
-    //         //do something if some_prop updated
-    //     },
-    // },
+        $props: {
+            handler: function (val, oldVal) {
+                console.log("watcher: ", val);
+            },
+            deep: true,
+        },
+        some_prop: function () {
+            //do something if some_prop updated
+        },
+    },
 
     updated() {},
 

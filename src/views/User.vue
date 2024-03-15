@@ -12,7 +12,9 @@
                             class="text-white bg-indigo-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2.5 text-center inline-flex items-center"
                             >Action</MenuButton
                         >
-                        <MenuItems class="z-10 bg-white absolute mt-32 divide-y divide-gray-100 shadow w-56">
+                        <MenuItems
+                            class="z-10 bg-white absolute mt-32 divide-y divide-gray-100 shadow w-56"
+                        >
                             <MenuItem class="py-2 text-sm text-gray-700">
                                 <a
                                     class="block px-4 py-2 cursor-pointer hover:bg-indigo-50"
@@ -67,7 +69,7 @@
                                 <div class="flex items-center">
                                     <input
                                         ref="checkbox_all"
-                                        @change="selectAll"
+                                        @change="selectAll($event)"
                                         id="checkbox_id"
                                         type="checkbox"
                                         class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
@@ -526,42 +528,42 @@ export default {
 
     methods: {
         nextPage(url) {
-            const AuthStr = 'Bearer '.concat(userStore().user.access_token);
+            const AuthStr = "Bearer ".concat(userStore().user.access_token);
             axios({
-                method: 'get',
+                method: "get",
                 url: url,
-                headers: {Authorization: AuthStr}
-            }).then(res => {
-                this.users = res.data;
-            }).catch(err => {
-
-            });
+                headers: { Authorization: AuthStr },
+            })
+                .then((res) => {
+                    this.users = res.data;
+                })
+                .catch((err) => {});
         },
 
         prevPage(url) {
-            const AuthStr = 'Bearer '.concat(userStore().user.access_token);
+            const AuthStr = "Bearer ".concat(userStore().user.access_token);
             axios({
-                method: 'get',
+                method: "get",
                 url: url,
-                headers: {Authorization: AuthStr}
-            }).then(res => {
-                this.users = res.data;
-            }).catch(err => {
-
-            });
+                headers: { Authorization: AuthStr },
+            })
+                .then((res) => {
+                    this.users = res.data;
+                })
+                .catch((err) => {});
         },
 
         goToPage(url, page) {
-            const AuthStr = 'Bearer '.concat(userStore().user.access_token);
+            const AuthStr = "Bearer ".concat(userStore().user.access_token);
             axios({
-                method: 'get',
+                method: "get",
                 url: `${url}?page=${page}`,
-                headers: {Authorization: AuthStr}
-            }).then(res => {
-                this.users = res.data;
-            }).catch(err => {
-
-            });
+                headers: { Authorization: AuthStr },
+            })
+                .then((res) => {
+                    this.users = res.data;
+                })
+                .catch((err) => {});
         },
 
         deleteUser() {
@@ -573,11 +575,10 @@ export default {
                 headers: { Authorization: AuthStr },
             })
                 .then((res) => {
-                    this.users.data.forEach((user, index) => {
-                        if (this.selected_users.includes(user.id)) {
-                            this.users.data.splice(index, 1);
-                        }
+                    this.users.data = this.users.data.filter((user) => {
+                        return !this.selected_users.includes(user.id);
                     });
+
                     this.selected_users = [];
                 })
                 .catch((err) => {});
@@ -682,7 +683,8 @@ export default {
                     url: `/api/users/search`,
                     headers: { Authorization: AuthStr },
                 })
-                    .then((res) => {console.log(res.data);
+                    .then((res) => {
+                        console.log(res.data);
                         this.users = res.data;
                     })
                     .catch((err) => {});
@@ -691,7 +693,7 @@ export default {
 
         selectAll(e) {
             if (e.target.checked) {
-                this.users.forEach((user) => {
+                this.users.data.forEach((user) => {
                     if (!this.selected_users.includes(user.id)) {
                         this.selected_users.push(user.id);
                     }
@@ -702,24 +704,24 @@ export default {
         },
     },
 
-    // watch: {
-    //     $data: {
-    //         handler: function (val, oldVal) {
-    //             console.log("watcher: ", val);
-    //         },
-    //         deep: true,
-    //     },
+    watch: {
+        $data: {
+            handler: function (val, oldVal) {
+                console.log("watcher: ", val);
+            },
+            deep: true,
+        },
 
-    //     $props: {
-    //         handler: function (val, oldVal) {
-    //             console.log("watcher: ", val);
-    //         },
-    //         deep: true,
-    //     },
-    //     some_prop: function () {
-    //         //do something if some_prop updated
-    //     },
-    // },
+        $props: {
+            handler: function (val, oldVal) {
+                console.log("watcher: ", val);
+            },
+            deep: true,
+        },
+        some_prop: function () {
+            //do something if some_prop updated
+        },
+    },
 
     updated() {},
 
