@@ -6,33 +6,32 @@
             <div
                 class="relative overflow-x-auto overflow-y-clip shadow-md sm:rounded-lg p-8 border"
             >
-                <div
-                    class="flex items-center justify-between pb-4 bg-white"
-                >
+                <div class="flex items-center justify-between pb-4 bg-white">
                     <Menu>
                         <MenuButton
                             class="text-white bg-indigo-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2.5 text-center inline-flex items-center"
                             >Action</MenuButton
                         >
-                        <MenuItems class="z-10 bg-white absolute mt-32 divide-y divide-gray-100 shadow w-56">
+                        <MenuItems
+                            class="z-10 bg-white absolute mt-32 divide-y divide-gray-100 shadow w-56"
+                        >
                             <MenuItem>
                                 <a
                                     class="block px-4 py-2 cursor-pointer hover:bg-indigo-50"
                                     role="button"
                                     @click="modal.addGames = true"
                                 >
-                                Add Games
+                                    Add Games
                                 </a>
                             </MenuItem>
                             <MenuItem>
                                 <a
                                     role="button"
                                     class="block px-4 py-2 cursor-pointer hover:bg-indigo-50"
-                                    @click="deleteGames"
+                                    @click="modal.deleteGames = true"
                                     >Delete Games</a
                                 >
                             </MenuItem>
-                            
                         </MenuItems>
                     </Menu>
 
@@ -66,12 +65,8 @@
                         />
                     </div>
                 </div>
-                <table
-                    class="w-full text-sm text-left text-gray-500"
-                >
-                    <thead
-                        class="text-xs text-gray-700 uppercase bg-gray-50"
-                    >
+                <table class="w-full text-sm text-left text-gray-500">
+                    <thead class="text-xs text-gray-700 uppercase bg-gray-50">
                         <tr>
                             <th scope="col" class="p-4">
                                 <div class="flex items-center">
@@ -138,7 +133,6 @@
                 </table>
 
                 <Pagination :data="games" />
-
             </div>
         </div>
 
@@ -168,10 +162,15 @@
                                 class="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
                             />
                         </div>
-                        
+
                         <div class="flex flex-col gap-4 mb-4">
                             <label for="description_add">Description</label>
-                            <textarea v-model="form.addGames.description" class="rounded-sm resize-none outline-offset-8 border focus:outline-none p-2" id="description_add" rows="6"></textarea>
+                            <textarea
+                                v-model="form.addGames.description"
+                                class="rounded-sm resize-none outline-offset-8 border focus:outline-none p-2"
+                                id="description_add"
+                                rows="6"
+                            ></textarea>
                         </div>
 
                         <div class="flex flex-row gap-4 mb-4">
@@ -246,16 +245,12 @@
                                                 d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
                                             />
                                         </svg>
-                                        <p
-                                            class="mb-2 text-sm text-gray-500"
-                                        >
+                                        <p class="mb-2 text-sm text-gray-500">
                                             <span class="font-semibold"
                                                 >Click to upload</span
                                             >
                                         </p>
-                                        <p
-                                            class="text-xs text-gray-500"
-                                        >
+                                        <p class="text-xs text-gray-500">
                                             PNG or JPG
                                         </p>
                                     </div>
@@ -331,11 +326,17 @@
                             class="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
                         />
                     </div>
-                    
+
                     <div class="flex flex-col gap-4 mb-4">
-                            <label for="description_edit">Description</label>
-                            <textarea ref="edit_game_description" :value="form.editGames.data.description" class="rounded-sm resize-none outline-offset-8 border focus:outline-none p-2" id="description_edit" rows="6"></textarea>
-                        </div>
+                        <label for="description_edit">Description</label>
+                        <textarea
+                            ref="edit_game_description"
+                            :value="form.editGames.data.description"
+                            class="rounded-sm resize-none outline-offset-8 border focus:outline-none p-2"
+                            id="description_edit"
+                            rows="6"
+                        ></textarea>
+                    </div>
 
                     <div class="flex flex-row gap-4 mb-4">
                         <div class="w-full">
@@ -434,6 +435,50 @@
                 </div>
             </DialogPanel>
         </Dialog>
+
+        <!-- delete modal -->
+        <Dialog
+            :open="modal.deleteGames"
+            @close="setDeleteGameModal"
+            class="z-50 bg-opacity-50 fixed bg-black w-full overflow-x-hidden overflow-y-auto inset-0 max-h-full"
+        >
+            <DialogPanel
+                class="relative w-full max-w-5xl max-h-full justify-center mx-auto mt-24"
+            >
+                <div class="relative bg-white rounded-lg shadow p-8">
+                    <DialogDescription>
+                        <div class="flex flex-col gap-4 p-4 items-center">
+                            <div class="text-5xl text-red-700 mb-4">
+                                <i class="fa-regular fa-circle-xmark"></i>
+                            </div>
+
+                            <div class="text-3xl">Are you Sure?</div>
+
+                            <div class="mb-4">
+                                Do you really want to delete this product?
+                            </div>
+
+                            <div class="flex flex-row gap-4">
+                                <button
+                                    class="text-white bg-indigo-700 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded text-lg"
+                                    type="button"
+                                    @click="deleteGames"
+                                >
+                                    Delete
+                                </button>
+                                <button
+                                    type="button"
+                                    class="text-white bg-red-700 border-0 py-2 px-6 focus:outline-none hover:bg-red-600 rounded text-lg"
+                                    @click="modal.deleteGames = false"
+                                >
+                                    Cancel
+                                </button>
+                            </div>
+                        </div>
+                    </DialogDescription>
+                </div>
+            </DialogPanel>
+        </Dialog>
     </div>
 </template>
 <script>
@@ -459,6 +504,7 @@ export default {
             modal: {
                 addGames: false,
                 editGames: false,
+                deleteGames: false,
             },
             form: {
                 addGames: {
@@ -497,43 +543,48 @@ export default {
     computed: {},
 
     methods: {
+        setDeleteGameModal(condition) {
+            this.modal.deleteGames = condition;  
+        },
+        
         nextPage(url) {
-            const AuthStr = 'Bearer '.concat(userStore().user.access_token);
+            const AuthStr = "Bearer ".concat(userStore().user.access_token);
             axios({
-                method: 'get',
+                method: "get",
                 url: url,
-                headers: {Authorization: AuthStr}
-            }).then(res => {
-                this.games = res.data;
-            }).catch(err => {
-
-            });
+                headers: { Authorization: AuthStr },
+            })
+                .then((res) => {
+                    this.games = res.data;
+                })
+                .catch((err) => {});
         },
 
         prevPage(url) {
-            const AuthStr = 'Bearer '.concat(userStore().user.access_token);
+            const AuthStr = "Bearer ".concat(userStore().user.access_token);
             axios({
-                method: 'get',
+                method: "get",
                 url: url,
-                headers: {Authorization: AuthStr}
-            }).then(res => {
-                this.games = res.data;
-            }).catch(err => {
-
-            });
+                headers: { Authorization: AuthStr },
+            })
+                .then((res) => {
+                    this.games = res.data;
+                })
+                .catch((err) => {});
         },
 
-        goToPage(url, page) {console.log('click');
-            const AuthStr = 'Bearer '.concat(userStore().user.access_token);
+        goToPage(url, page) {
+            console.log("click");
+            const AuthStr = "Bearer ".concat(userStore().user.access_token);
             axios({
-                method: 'get',
+                method: "get",
                 url: `${url}?page=${page}`,
-                headers: {Authorization: AuthStr}
-            }).then(res => {
-                this.games = res.data;
-            }).catch(err => {
-
-            });
+                headers: { Authorization: AuthStr },
+            })
+                .then((res) => {
+                    this.games = res.data;
+                })
+                .catch((err) => {});
         },
 
         setEditModal(condition) {
@@ -653,9 +704,10 @@ export default {
                     this.games.data = this.games.data.filter((game) => {
                         return !this.selected_games.includes(game.id);
                     });
-                    
+
                     this.selected_games = [];
                     this.$refs.checkbox_all.checked = false;
+                    this.modal.deleteGames = false;
                 })
                 .catch((err) => {
                     console.log(err);
@@ -671,10 +723,16 @@ export default {
             formData.append("id", this.form.editGames.data.id);
             formData.append("name", this.$refs.edit_game_name.value);
             formData.append("genre", this.$refs.edit_game_genre.value);
-            formData.append("trailer_link", this.$refs.edit_game_trailer_link.value);
+            formData.append(
+                "trailer_link",
+                this.$refs.edit_game_trailer_link.value
+            );
             formData.append("rating", this.$refs.edit_game_rating.value);
-            formData.append("description", this.$refs.edit_game_description.value);
-            
+            formData.append(
+                "description",
+                this.$refs.edit_game_description.value
+            );
+
             const AuthStr = "Bearer ".concat(userStore().user.access_token);
             axios
                 .post(`/api/games/update`, formData, {

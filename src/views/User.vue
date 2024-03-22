@@ -15,7 +15,7 @@
                         <MenuItems
                             class="z-10 bg-white absolute mt-32 divide-y divide-gray-100 shadow w-56"
                         >
-                            <MenuItem class="py-2 text-sm text-gray-700">
+                            <MenuItem>
                                 <a
                                     class="block px-4 py-2 cursor-pointer hover:bg-indigo-50"
                                     role="button"
@@ -28,7 +28,7 @@
                                 <a
                                     role="button"
                                     class="block px-4 py-2 cursor-pointer hover:bg-indigo-50"
-                                    @click="deleteUser"
+                                    @click="modal.delete = true"
                                     >Delete User</a
                                 >
                             </MenuItem>
@@ -143,6 +143,7 @@
             </div>
         </div>
 
+        <!-- edit modal -->
         <Dialog
             v-if="edit_user"
             :open="modal.edit"
@@ -297,6 +298,7 @@
             </DialogPanel>
         </Dialog>
 
+        <!-- add modal -->
         <Dialog
             :open="modal.add"
             @close="initAddModal"
@@ -466,6 +468,51 @@
                 </div>
             </DialogPanel>
         </Dialog>
+        
+        <!-- delete modal -->
+        <Dialog
+            :open="modal.delete"
+            @close="initDeleteModal"
+            class="z-50 bg-opacity-50 fixed bg-black w-full overflow-x-hidden overflow-y-auto inset-0 max-h-full"
+        >
+            <DialogPanel
+                class="relative w-full max-w-5xl max-h-full justify-center mx-auto mt-24"
+            >
+                <div class="relative bg-white rounded-lg shadow p-8">
+                    <DialogDescription>
+                        <div class="flex flex-col gap-4 p-4 items-center">
+                            <div class="text-5xl text-red-700 mb-4">
+                                <i class="fa-regular fa-circle-xmark"></i>
+                            </div>
+
+                            <div class="text-3xl">Are you Sure?</div>
+
+                            <div class="mb-4">
+                                Do you really want to delete this product?
+                            </div>
+
+                            <div class="flex flex-row gap-4">
+                                <button
+                                    class="text-white bg-indigo-700 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded text-lg"
+                                    type="button"
+                                    @click="deleteUser"
+                                >
+                                    Delete
+                                </button>
+                                <button
+                                    type="button"
+                                    class="text-white bg-red-700 border-0 py-2 px-6 focus:outline-none hover:bg-red-600 rounded text-lg"
+                                    @click="modal.delete = false"
+                                >
+                                    Cancel
+                                </button>
+                            </div>
+                        </div>
+                    </DialogDescription>
+                </div>
+            </DialogPanel>
+        </Dialog>
+        
     </div>
 </template>
 <script>
@@ -491,6 +538,7 @@ export default {
             modal: {
                 add: false,
                 edit: false,
+                delete: false,
             },
             form: {
                 addUser: {
@@ -580,6 +628,7 @@ export default {
                     });
 
                     this.selected_users = [];
+                    this.modal.delete = false;
                 })
                 .catch((err) => {});
         },
@@ -639,6 +688,10 @@ export default {
 
         initAddModal(value) {
             this.modal.add = value;
+        },
+        
+        initDeleteModal(value) {
+            this.modal.delete = value;
         },
 
         updateUser() {

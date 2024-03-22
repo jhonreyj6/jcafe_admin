@@ -15,7 +15,7 @@
                         <MenuItems
                             class="z-10 bg-white absolute mt-32 divide-y divide-gray-100 shadow w-56"
                         >
-                            <MenuItem class="py-2 text-sm text-gray-700">
+                            <MenuItem>
                                 <a
                                     class="block px-4 py-2 cursor-pointer hover:bg-indigo-50"
                                     role="button"
@@ -28,6 +28,7 @@
                                 <a
                                     role="button"
                                     class="block px-4 py-2 cursor-pointer hover:bg-indigo-50"
+                                    @click="modal.delete = true"
                                     >Delete Order</a
                                 >
                             </MenuItem>
@@ -55,7 +56,8 @@
                         <input
                             type="text"
                             class="block p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500"
-                            placeholder="Search for users"
+                            placeholder="Search order"
+                            @keyup.prevent="searchOrder"
                             ref="search"
                         />
                     </div>
@@ -78,7 +80,7 @@
                                 </div>
                             </th>
                             <th scope="col" class="px-2 py-3">ID</th>
-                            <th scope="col" class="px-6 py-3">Details</th>
+                            <th scope="col" class="px-6 py-3">User</th>
                             <th scope="col" class="px-6 py-3">Status</th>
                             <th scope="col" class="px-6 py-3">Action</th>
                         </tr>
@@ -109,17 +111,18 @@
                                 </div>
                             </td>
                             <td class="px-6 py-4">
-                                <p>order items</p>
+                                <div class="flex items-center">Yer Nohj</div>
                             </td>
                             <td class="px-6 py-4">
-                                <div class="flex items-center">0</div>
+                                <div class="flex items-center">
+                                    {{ order.status }}
+                                </div>
                             </td>
                             <td class="px-6 py-4">
                                 <a
                                     role="button"
                                     class="font-medium text-blue-600"
-                                    @click="initEditModal(true, order)"
-                                    >Edit
+                                    >View Details
                                 </a>
                             </td>
                         </tr>
@@ -141,7 +144,7 @@
             >
                 <div class="relative bg-white rounded-lg shadow p-8">
                     <DialogTitle class="text-xl font-bold mb-4 border-b"
-                        >Add User</DialogTitle
+                        >Add Order</DialogTitle
                     >
                     <DialogDescription>
                         <div class="flex flex-row gap-4">
@@ -149,127 +152,67 @@
                                 <label
                                     for="add_first_name"
                                     class="leading-7 text-sm text-gray-600"
-                                    >First Name</label
-                                >
-                                <input
-                                    type="text"
-                                    class="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
-                                />
-                            </div>
-
-                            <div class="relative mb-4 w-full">
-                                <label class="leading-7 text-sm text-gray-600"
-                                    >Last Name</label
-                                >
-                                <input
-                                    type="text"
-                                    class="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
-                                />
-                            </div>
-                        </div>
-
-                        <div class="relative mb-4">
-                            <label
-                                for="add_email"
-                                class="leading-7 text-sm text-gray-600"
-                                >Email</label
-                            >
-                            <input
-                                type="email"
-                                class="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
-                            />
-                        </div>
-
-                        <div class="flex flex-row gap-4">
-                            <div class="relative mb-4 w-full">
-                                <label
-                                    for="add_password"
-                                    class="leading-7 text-sm text-gray-600"
-                                    >Password</label
-                                >
-                                <input
-                                    type="password"
-                                    class="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
-                                />
-                            </div>
-
-                            <div class="relative mb-4 w-full">
-                                <label
-                                    for="add_confirm_pass"
-                                    class="leading-7 text-sm text-gray-600"
-                                    >Confirm Password</label
-                                >
-                                <input
-                                    type="password"
-                                    class="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
-                                />
-                            </div>
-                        </div>
-
-                        <div class="relative mb-4 w-full">
-                            <label
-                                for="add_contact"
-                                class="leading-7 text-sm text-gray-600"
-                                >Address</label
-                            >
-                            <input
-                                type="text"
-                                class="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
-                            />
-                        </div>
-
-                        <div class="flex flex-row gap-4 mb-4">
-                            <div class="relative mb-4 w-full">
-                                <label
-                                    for="add_contact"
-                                    class="leading-7 text-sm text-gray-600"
-                                    >Contact</label
+                                    >User ID</label
                                 >
                                 <input
                                     type="number"
+                                    id="add_first_name"
+                                    v-model="form.add.user_id"
                                     class="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
                                 />
                             </div>
+                        </div>
 
-                            <div class="relative mb-4 w-full">
+                        <div
+                            class="flex flex-row gap-4 mb-4"
+                            v-for="count in variant_counts"
+                            :key="count"
+                        >
+                            <div class="relative w-full">
                                 <label
-                                    for="add_birthday"
+                                    :for="`variant_${count}`"
                                     class="leading-7 text-sm text-gray-600"
-                                    >Birthday</label
+                                    >Product Variant ID</label
                                 >
                                 <input
-                                    type="date"
-                                    class="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
+                                    type="number"
+                                    :id="`variant_${count}`"
+                                    class="variant_id_class w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
                                 />
                             </div>
-
-                            <div class="relative mb-4 w-full">
+                            <div class="relative w-full">
                                 <label
-                                    for="role"
-                                    class="block mb-2 text-sm font-medium text-gray-900"
-                                    >Role</label
+                                    :for="`variant_quantity_${count}`"
+                                    class="leading-7 text-sm text-gray-600"
+                                    >Quantity</label
                                 >
-                                <select
-                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                                >
-                                    <option value="" selected>
-                                        Choose role
-                                    </option>
-                                    <option value="">Freelancer</option>
-                                    <option value="client">Client</option>
-                                    <option value="admin">Admin</option>
-                                </select>
+                                <input
+                                    type="number"
+                                    :id="`variant_quantity_${count}`"
+                                    class="quantity_id_class w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
+                                />
                             </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <button
+                                @click="variant_counts++"
+                                class="inline-flex text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded text-lg"
+                            >
+                                Add Variant
+                            </button>
                         </div>
 
                         <div class="flex flex-row justify-center gap-4">
                             <button
                                 class="inline-flex text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded text-lg"
+                                @click="createOrder"
                             >
-                                Add User
+                                Create
                             </button>
                             <button
-                                class="inline-flex text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded text-lg"
+                                class="inline-flex text-white bg-red-500 border-0 py-2 px-6 focus:outline-none hover:bg-indiredgo-600 rounded text-lg"
+                                @click="modal.add = false"
                             >
                                 Cancel
                             </button>
@@ -279,135 +222,46 @@
             </DialogPanel>
         </Dialog>
 
-        <!-- Edit modal -->
+        <!-- delete modal -->
         <Dialog
-            v-if="form.edit.data"
-            :open="modal.edit"
-            @close="initEditModal"
-            class="z-50 bg-opacity-50 fixed bg-black w-full p-4 overflow-x-hidden overflow-y-auto inset-0 max-h-full"
+            :open="modal.delete"
+            @close="setDeleteOrderModal"
+            class="z-50 bg-opacity-50 fixed bg-black w-full overflow-x-hidden overflow-y-auto inset-0 max-h-full"
         >
             <DialogPanel
                 class="relative w-full max-w-5xl max-h-full justify-center mx-auto mt-24"
             >
                 <div class="relative bg-white rounded-lg shadow p-8">
-                    <DialogTitle class="text-xl font-bold mb-4 border-b"
-                        >Edit User</DialogTitle
-                    >
                     <DialogDescription>
-                        <div class="flex flex-row gap-4">
-                            <div class="relative mb-4 w-full">
-                                <label
-                                    for="first_name"
-                                    class="leading-7 text-sm text-gray-600"
-                                    >First name</label
-                                >
-                                <input
-                                    type="text"
-                                    class="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
-                                />
+                        <div class="flex flex-col gap-4 p-4 items-center">
+                            <div class="text-5xl text-red-700 mb-4">
+                                <i class="fa-regular fa-circle-xmark"></i>
                             </div>
-                            <div class="relative mb-4 w-full">
-                                <label
-                                    for="last_name"
-                                    class="leading-7 text-sm text-gray-600"
-                                    >Last name</label
-                                >
-                                <input
-                                    type="text"
-                                    class="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
-                                />
-                            </div>
-                        </div>
 
-                        <div class="relative mb-4 w-full">
-                            <label
-                                for="email"
-                                class="leading-7 text-sm text-gray-600"
-                                >Email</label
-                            >
-                            <input
-                                type="text"
-                                class="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
-                            />
-                        </div>
+                            <div class="text-3xl">Are you Sure?</div>
 
-                        <div class="flex flex-row gap-4">
-                            <div class="relative mb-4 w-full">
-                                <label
-                                    for="password"
-                                    class="leading-7 text-sm text-gray-600"
-                                    >Password</label
-                                >
-                                <input
-                                    type="password"
-                                    class="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
-                                />
+                            <div class="mb-4">
+                                Do you really want to delete this product?
                             </div>
-                            <div class="relative mb-4 w-full">
-                                <label
-                                    for="confirm_pass"
-                                    class="leading-7 text-sm text-gray-600"
-                                    >Confirm Password</label
-                                >
-                                <input
-                                    type="password"
-                                    class="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
-                                />
-                            </div>
-                        </div>
 
-                        <div class="relative mb-4">
-                            <label
-                                for="addr"
-                                class="leading-7 text-sm text-gray-600"
-                                >Address</label
-                            >
-                            <input
-                                type="text"
-                                class="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
-                            />
-                        </div>
-
-                        <div class="flex flex-row gap-4">
-                            <div class="relative mb-4 w-full">
-                                <label
-                                    for="contact"
-                                    class="leading-7 text-sm text-gray-600"
-                                    >Contact</label
+                            <div class="flex flex-row gap-4">
+                                <button
+                                    class="text-white bg-indigo-700 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded text-lg"
+                                    type="button"
+                                    @click="deleteOrder"
                                 >
-                                <input
-                                    type="number"
-                                    class="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
-                                />
-                            </div>
-                            <div class="relative mb-4 w-full">
-                                <label
-                                    for="bday"
-                                    class="leading-7 text-sm text-gray-600"
-                                    >Birthday</label
+                                    Delete
+                                </button>
+                                <button
+                                    type="button"
+                                    class="text-white bg-red-700 border-0 py-2 px-6 focus:outline-none hover:bg-red-600 rounded text-lg"
+                                    @click="modal.delete = false"
                                 >
-                                <input
-                                    type="date"
-                                    class="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
-                                />
+                                    Cancel
+                                </button>
                             </div>
                         </div>
                     </DialogDescription>
-
-                    <div class="flex flex-row-reverse gap-2">
-                        <button
-                            @click="updateUser"
-                            class="inline-flex text-white bg-indigo-700 border-0 py-1 px-6 focus:outline-none hover:bg-indigo-600 rounded text-lg"
-                        >
-                            Save
-                        </button>
-                        <button
-                            @click="initEditModal(false)"
-                            class="inline-flex text-white bg-red-700 border-0 py-1 px-6 focus:outline-none hover:bg-indigo-600 rounded text-lg"
-                        >
-                            Cancel
-                        </button>
-                    </div>
                 </div>
             </DialogPanel>
         </Dialog>
@@ -437,13 +291,15 @@ export default {
             modal: {
                 add: false,
                 edit: false,
+                delete: false,
             },
 
             form: {
-                edit: {
-                    data: "",
+                add: {
+                    user_id: "",
                 },
             },
+            variant_counts: 1,
         };
     },
     components: {
@@ -464,6 +320,103 @@ export default {
     computed: {},
 
     methods: {
+        
+        
+        searchOrder(e) {
+            if(e.keyCode == 13) {
+            const AuthStr = "Bearer ".concat(userStore().user.access_token);
+            axios({
+                method: 'get',
+                params: {query: this.$refs.search.value},
+                url: `/api/orders/admin/search`,
+                headers: {Authorization: AuthStr}
+            }).then(res => {
+                this.orders = res.data;
+            }).catch(err => {
+            
+            });  
+        }
+        },
+        
+        createOrder(e) {
+            let product_variant_ids = Array.from(document.getElementsByClassName('variant_id_class'));
+            let product_variant_quantity = Array.from(document.getElementsByClassName('quantity_id_class'));
+            
+            let ids = [];
+            let quantities = [];
+            let error = false;
+
+            product_variant_ids.forEach(element => {
+                if(element.value) {
+                ids.push(element.value)
+                } else {
+                    error = true;
+                }
+            });
+            
+            product_variant_quantity.forEach(element => {
+                if(element.value) {
+                    quantities.push(element.value);
+                } else {
+                    error = true;
+                }
+            });
+            if(error) {
+                return false;
+            }
+            
+            const AuthStr = "Bearer ".concat(userStore().user.access_token);
+            axios({
+                method: 'POST',
+                params: {
+                    user_id: this.form.add.user_id,
+                    quantity: quantities,
+                    variant_id: ids,
+                },
+                url: `/api/orders/admin`,
+                headers: {Authorization: AuthStr}
+            }).then(res => {
+                this.modal.add = false;
+            }).catch(err => {
+            
+            });
+        },
+        
+        setDeleteOrderModal(condition) {
+            this.modal.delete = condition;
+        },
+        
+        deleteOrder() {
+            const AuthStr = "Bearer ".concat(userStore().user.access_token);
+            axios({
+                method: "delete",
+                params: { id: this.selected_orders },
+                url: `/api/orders/admin`,
+                headers: { Authorization: AuthStr },
+            })
+                .then((res) => {
+                    this.orders.data = this.orders.data.filter((order) => {
+                        return !this.selected_orders.includes(order.id);
+                    });
+
+                    this.selected_users = [];
+                    this.modal.delete = false;
+                })
+                .catch((err) => {});
+        },
+
+        selectAll(e) {
+            if (e.target.checked) {
+                this.orders.data.forEach((order) => {
+                    if (!this.selected_orders.includes(order.id)) {
+                        this.selected_orders.push(order.id);
+                    }
+                });
+            } else {
+                this.selected_orders = [];
+            }
+        },
+
         getOrders() {
             const AuthStr = "Bearer ".concat(userStore().user.access_token);
             axios({
@@ -475,11 +428,6 @@ export default {
                     this.orders = res.data;
                 })
                 .catch((err) => {});
-        },
-
-        initEditModal(value, order) {
-            this.modal.edit = value;
-            this.form.edit.data = order;
         },
 
         initAddModal(value) {

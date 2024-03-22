@@ -26,23 +26,33 @@
                         >
                             <div
                                 class="relative"
-                                v-for="(image, index) in form.post.attachments
+                                v-for="(file, index) in form.post.attachments
                                     .images.temp_link"
                                 :key="index"
                             >
                                 <div class="absolute right-0 top-0 z-10">
                                     <button
                                         class="inline-flex text-indigo-700 border-0 focus:outline-none bg-gray-400 p-1 hover:text-indigo-300 rounded"
-                                        @click="removeAttachFiles(image)"
+                                        @click="removeAttachFiles(file)"
                                     >
                                         <i class="fa-solid fa-xmark"></i>
                                     </button>
                                 </div>
                                 <img
-                                    :src="image"
+                                    v-if="
+                                        file.file_type == 'jpg' ||
+                                        file.file_type == 'png'
+                                    "
+                                    :src="file.src"
                                     class="h-32 w-full rounded"
                                     alt=""
                                 />
+                                <video v-else class="w-full" controls>
+                                    <source
+                                        :src="file.src"
+                                        :type="`video/${file.file_type}`"
+                                    />
+                                </video>
                             </div>
                         </div>
 
@@ -176,21 +186,38 @@
                     v-if="post.get_post_attachment_images"
                 >
                     <div v-if="post.get_post_attachment_images.length == 1">
-                        <div
-                            class="grid grid-cols-1 mb-4 px-24 rounded bg-indigo-50"
-                        >
-                            <img
-                                :src="attachment.image_url"
-                                alt=""
-                                class="w-full h-96"
+                        <div class="grid grid-cols-1 mb-4 rounded bg-indigo-50">
+                            <div
                                 v-for="attachment in post.get_post_attachment_images"
                                 :key="attachment.id"
-                            />
+                            >
+                                <img
+                                    v-if="
+                                        attachment.file_type == 'png' ||
+                                        attachment.file_type == 'jpg' ||
+                                        !attachment.file_type
+                                    "
+                                    :src="attachment.image_url"
+                                    alt=""
+                                    class="h-96"
+                                    :class="
+                                        attachment.file_width > 280
+                                            ? 'w-full'
+                                            : 'md:w-[28rem] md:mx-auto w-full'
+                                    "
+                                />
+                                <video v-else class="w-full h-96" controls>
+                                    <source
+                                        :src="attachment.image_url"
+                                        :type="`video/${attachment.file_type}`"
+                                    />
+                                </video>
+                            </div>
                         </div>
                     </div>
 
                     <div
-                        class="flex flex-row mb-4 rounded bg-indigo-50"
+                        class="flex flex-row mb-4 items-center rounded bg-indigo-50"
                         v-if="post.get_post_attachment_images.length == 2"
                     >
                         <div
@@ -199,9 +226,20 @@
                             :key="attachment.id"
                         >
                             <img
+                                v-if="
+                                    attachment.file_type == 'png' ||
+                                    attachment.file_type == 'jpg' ||
+                                    !attachment.file_type
+                                "
                                 :src="attachment.image_url"
-                                class="w-full h-96 border border-indigo-700"
+                                class="h-96 border border-indigo-700 w-full"
                             />
+                            <video v-else class="w-full h-96" controls>
+                                <source
+                                    :src="attachment.image_url"
+                                    :type="`video/${attachment.file_type}`"
+                                />
+                            </video>
                         </div>
                     </div>
 
@@ -215,10 +253,21 @@
                             class="w-1/3"
                         >
                             <img
+                                v-if="
+                                    attachment.file_type == 'png' ||
+                                    attachment.file_type == 'jpg' ||
+                                    !attachment.file_type
+                                "
                                 :src="attachment.image_url"
                                 alt=""
                                 class="h-96 w-full border border-indigo-700"
                             />
+                            <video v-else class="w-full h-96" controls>
+                                <source
+                                    :src="attachment.image_url"
+                                    :type="`video/${attachment.file_type}`"
+                                />
+                            </video>
                         </div>
                     </div>
 
@@ -231,10 +280,21 @@
                             :key="attachment.id"
                         >
                             <img
+                                v-if="
+                                    attachment.file_type == 'png' ||
+                                    attachment.file_type == 'jpg' ||
+                                    !attachment.file_type
+                                "
                                 :src="attachment.image_url"
                                 alt=""
                                 class="w-full h-96 border border-indigo-700"
                             />
+                            <video v-else class="w-full h-96" controls>
+                                <source
+                                    :src="attachment.image_url"
+                                    :type="`video/${attachment.file_type}`"
+                                />
+                            </video>
                         </div>
                     </div>
 
@@ -248,20 +308,41 @@
                             ) in post.get_post_attachment_images"
                             :key="attachment.id"
                         >
-                            <div>
+                            <div v-if="index <= 2">
                                 <img
+                                    v-if="
+                                        attachment.file_type == 'png' ||
+                                        attachment.file_type == 'jpg' ||
+                                        !attachment.file_type
+                                    "
                                     :src="attachment.image_url"
                                     :alt="index"
                                     class="w-full h-96 border border-indigo-700"
-                                    v-if="index <= 2"
                                 />
+                                <video v-else class="w-full h-96" controls>
+                                    <source
+                                        :src="attachment.image_url"
+                                        :type="`video/${attachment.file_type}`"
+                                    />
+                                </video>
                             </div>
                             <div class="opacity-50 relative" v-if="index == 3">
                                 <img
+                                    v-if="
+                                        attachment.file_type == 'png' ||
+                                        attachment.file_type == 'jpg' ||
+                                        !attachment.file_type
+                                    "
                                     :src="attachment.image_url"
                                     alt=""
                                     class="w-full h-96 border border-indigo-700"
                                 />
+                                <video v-else class="w-full h-96" controls>
+                                    <source
+                                        :src="attachment.image_url"
+                                        :type="`video/${attachment.file_type}`"
+                                    />
+                                </video>
                                 <div
                                     class="absolute left-1/2 top-1/2 w-64 flex flex-col"
                                 >
@@ -557,15 +638,13 @@ export default {
                     } else {
                         post.authLikes = 0;
                         post.get_likes.forEach((like, index) => {
-                            if(like.user_id == userStore().user.id) {
+                            if (like.user_id == userStore().user.id) {
                                 post.get_likes.splice(index, 1);
                             }
                         });
                     }
                 })
-                .catch((error) => {
-                    
-                });
+                .catch((error) => {});
         },
 
         initAttachFile() {
@@ -597,6 +676,46 @@ export default {
             });
         },
 
+        // morphAttachFiles() {
+        //     if (!this.$refs.attachFiles.files.length) {
+        //         return false;
+        //     }
+
+        //     this.form.post.attachments.images.temp_link = [];
+        //     this.form.post.attachments.files.name = [];
+
+        //     // let formData = new FormData();
+        //     for (
+        //         let index = 0;
+        //         index < this.$refs.attachFiles.files.length;
+        //         index++
+        //     ) {
+        //         if (
+        //             this.getFileFormat(
+        //                 this.$refs.attachFiles.files[index].name
+        //             ) == "png" ||
+        //             this.getFileFormat(
+        //                 this.$refs.attachFiles.files[index].name
+        //             ) == "jpeg" ||
+        //             this.getFileFormat(
+        //                 this.$refs.attachFiles.files[index].name
+        //             ) == "jpg"
+        //         ) {
+        //             this.form.post.attachments.images.temp_link.push(
+        //                 URL.createObjectURL(this.$refs.attachFiles.files[index])
+        //             );
+        //         } else {
+        //             this.form.post.attachments.files.name.push(
+        //                 this.$refs.attachFiles.files[index].name
+        //             );
+        //         }
+
+        //         // formData.append("files[]", this.$refs.attachFiles.files[index]);
+        //     }
+        //     this.form.post.attachments.isExist = true;
+        //     // this.form.post.formData = formData;
+        // },
+
         morphAttachFiles() {
             if (!this.$refs.attachFiles.files.length) {
                 return false;
@@ -605,43 +724,56 @@ export default {
             this.form.post.attachments.images.temp_link = [];
             this.form.post.attachments.files.name = [];
 
-            // let formData = new FormData();
             for (
                 let index = 0;
                 index < this.$refs.attachFiles.files.length;
                 index++
             ) {
-                if (
-                    this.getFileFormat(
-                        this.$refs.attachFiles.files[index].name
-                    ) == "png" ||
-                    this.getFileFormat(
-                        this.$refs.attachFiles.files[index].name
-                    ) == "jpeg" ||
-                    this.getFileFormat(
-                        this.$refs.attachFiles.files[index].name
-                    ) == "jpg"
+                switch (
+                    this.getFileFormat(this.$refs.attachFiles.files[index].name)
                 ) {
-                    this.form.post.attachments.images.temp_link.push(
-                        URL.createObjectURL(this.$refs.attachFiles.files[index])
-                    );
-                } else {
-                    this.form.post.attachments.files.name.push(
-                        this.$refs.attachFiles.files[index].name
-                    );
+                    case "png":
+                        this.form.post.attachments.images.temp_link.push({
+                            src: URL.createObjectURL(
+                                this.$refs.attachFiles.files[index]
+                            ),
+                            file_type: "png",
+                        });
+                        break;
+
+                    case "jpg":
+                        this.form.post.attachments.images.temp_link.push({
+                            src: URL.createObjectURL(
+                                this.$refs.attachFiles.files[index]
+                            ),
+                            file_type: "jpg",
+                        });
+                        break;
+
+                    case "mp4":
+                        this.form.post.attachments.images.temp_link.push({
+                            src: URL.createObjectURL(
+                                this.$refs.attachFiles.files[index]
+                            ),
+                            file_type: "mp4",
+                        });
+                        break;
+
+                    default:
+                        this.form.post.attachments.files.name.push(
+                            this.$refs.attachFiles.files[index].name
+                        );
+                        break;
                 }
-                
-                // formData.append("files[]", this.$refs.attachFiles.files[index]);
             }
             this.form.post.attachments.isExist = true;
-            // this.form.post.formData = formData;
         },
-        
+
         createPost() {
             const AuthStr = "Bearer ".concat(userStore().user.access_token);
             let formData = new FormData();
             formData.append("message", this.form.post.message);
-            
+
             for (
                 let index = 0;
                 index < this.$refs.attachFiles.files.length;
@@ -649,7 +781,7 @@ export default {
             ) {
                 formData.append("files[]", this.$refs.attachFiles.files[index]);
             }
-            
+
             axios
                 .post(`/api/posts`, formData, {
                     headers: {
@@ -658,15 +790,13 @@ export default {
                     },
                 })
                 .then((res) => {
-                    console.log(this.$refs.attachFiles.files);
                     this.posts.data.unshift(res.data);
                     this.form.post.message = "";
                     this.form.post.attachments.images.temp_link = [];
                     this.form.post.attachments.files.name = [];
-                    
+
                     this.form.post.attachments.isExist = false;
                     this.$refs.attachFiles.value = "";
-                    console.log('last');
                 })
                 .catch((err) => {
                     // console.log(err.response);
@@ -679,36 +809,33 @@ export default {
             } else {
                 var url = `/api/posts`;
             }
-            
+
             return new Promise((resolve, reject) => {
-            const AuthStr = "Bearer ".concat(userStore().user.access_token);
-            axios({
-                method: "get",
-                url: url,
-                headers: { Authorization: AuthStr },
-            })
-                .then((res) => {
-
-                    if (page) {
-                        this.posts.next_page_url = res.data.next_page_url;
-                        resolve(
-                            res.data.data.forEach((data) => {
-                                this.posts.data.push(data);
-                            })
-                        );
-                    } else {
-                        resolve(this.posts = res.data);
-                    }
-                    this.timeout.pagination.post = 1;
+                const AuthStr = "Bearer ".concat(userStore().user.access_token);
+                axios({
+                    method: "get",
+                    url: url,
+                    headers: { Authorization: AuthStr },
                 })
-                .catch((err) => {
-                    this.timeout.pagination.post = 0;
-                    reject(err);
-                })
-            })
+                    .then((res) => {
+                        if (page) {
+                            this.posts.next_page_url = res.data.next_page_url;
+                            resolve(
+                                res.data.data.forEach((data) => {
+                                    this.posts.data.push(data);
+                                })
+                            );
+                        } else {
+                            resolve((this.posts = res.data));
+                        }
+                        this.timeout.pagination.post = 1;
+                    })
+                    .catch((err) => {
+                        this.timeout.pagination.post = 0;
+                        reject(err);
+                    });
+            });
         },
-
-        
     },
 
     watch: {
@@ -736,7 +863,7 @@ export default {
     beforeMounted() {},
 
     mounted() {
-        document.getElementById('comment').focus();
+        document.getElementById("comment").focus();
         this.getPost();
     },
 };
