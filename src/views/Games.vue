@@ -607,7 +607,8 @@ export default {
             );
         },
 
-        addNewGame() {
+        addNewGame(e) {
+            e.target.disabled = true;
             const formData = new FormData();
             formData.append("image", this.form.addGames.image);
             formData.append("name", this.form.addGames.name);
@@ -636,8 +637,10 @@ export default {
                     this.form.addGames.description = "";
 
                     this.form.addGames.temp_img = "";
+                    e.target.disabled = false;
                 })
                 .catch((err) => {
+                    e.target.disabled = false;
                     console.log(err.response.data.message);
                 });
         },

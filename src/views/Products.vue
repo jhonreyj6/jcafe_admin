@@ -792,7 +792,8 @@ export default {
                 });
         },
 
-        addProduct() {
+        addProduct(e) {
+            e.target.disabled = true;
             const formData = new FormData();
             formData.append("name", this.form.addProduct.name);
             formData.append("rating", this.form.addProduct.rating);
@@ -836,9 +837,11 @@ export default {
                     this.modal.addProduct = false;
                     this.form.addProduct.temp_img = "";
                     this.products.data.push(res.data);
+                    e.target.disabled = false;
                 })
                 .catch((err) => {
                     console.log(err.response);
+                    e.target.disabled = false;
                 });
         },
 

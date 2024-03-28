@@ -339,6 +339,7 @@ export default {
         },
         
         createOrder(e) {
+            e.target.disabled = true;
             let product_variant_ids = Array.from(document.getElementsByClassName('variant_id_class'));
             let product_variant_quantity = Array.from(document.getElementsByClassName('quantity_id_class'));
             
@@ -377,8 +378,9 @@ export default {
                 headers: {Authorization: AuthStr}
             }).then(res => {
                 this.modal.add = false;
+                e.target.disabled = false;
             }).catch(err => {
-            
+                e.target.disabled = false;
             });
         },
         

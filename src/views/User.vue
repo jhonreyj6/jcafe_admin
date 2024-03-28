@@ -458,7 +458,7 @@
                                 Add User
                             </button>
                             <button
-                                class="inline-flex text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded text-lg"
+                                class="inline-flex text-white bg-red-500 border-0 py-2 px-6 focus:outline-none hover:bg-red-600 rounded text-lg"
                                 @click="modal.add = false"
                             >
                                 Cancel
@@ -633,7 +633,8 @@ export default {
                 .catch((err) => {});
         },
 
-        createUser() {
+        createUser(e) {
+            e.target.disabled = true;
             axios({
                 method: "post",
                 url: `/api/users`,
@@ -657,8 +658,10 @@ export default {
                 .then((res) => {
                     this.users.data.unshift(res.data);
                     this.modal.add = false;
+                    e.target.disabled = false;
                 })
                 .catch((err) => {
+                    e.target.disabled = false;
                     console.log(err.response);
                 });
         },
