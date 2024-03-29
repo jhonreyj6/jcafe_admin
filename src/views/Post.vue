@@ -129,7 +129,7 @@
             >
                 <div class="flex flex-row gap-4 pl-4 pr-4 pt-4 pb-2">
                     <img
-                        src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                        :src="post.get_user_details.image_url"
                         alt=""
                         width="50"
                         height="50"

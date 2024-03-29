@@ -4,6 +4,7 @@ export const userStore = defineStore('user', {
     state: () => ({
       user: null,
       access_token : null,
+      profile_image: null,
     }),
 
     getters: {

@@ -114,6 +114,7 @@
                 access_token: res.data.access_token,
               });
               state.access_token = res.data.access_token;
+              state.profile_image = res.data.profile_image;
             });
             this.$router.push("/dashboard");
           })

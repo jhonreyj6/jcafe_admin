@@ -68,21 +68,13 @@ const router = createRouter({
         },
         
         {
-            path: "/test",
-            name: "Test",
+            path: "/:catchAll(.*)",
+            name: "PageNotFound",
             component: () =>
-                import(/* webpackChunkName: "Test" */ "../views/Test.vue"),
-            meta: { requiresAuth: true },
+                import(
+                    /* webpackChunkName: "NotFound" */ "../views/PageNotFound.vue"
+                ),
         },
-        
-        // {
-        //     path: "/:catchAll(.*)",
-        //     name: "PageNotFound",
-        //     component: () =>
-        //         import(
-        //             /* webpackChunkName: "NotFound" */ "../views/PageNotFound.vue"
-        //         ),
-        // },
         
     ],
 });
