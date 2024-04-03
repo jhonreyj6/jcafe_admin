@@ -23,7 +23,9 @@
                         </div>
                         <input
                             class="peer w-full rounded-[7px] border border-blue-gray-200 border-t-transparent px-3 py-2.5 !pr-9 font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 focus:border-2 focus:border-indigo-600 focus:border-t-transparent focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50"
-                            placeholder=" "
+                            placeholder=""
+                            @keyup="searchUser"
+                            v-model="form.search"
                         />
                         <label
                             class="before:content[' '] after:content[' '] pointer-events-none absolute left-0 -top-1.5 flex h-full w-full select-none text-[11px] font-normal leading-tight text-blue-gray-400 transition-all before:pointer-events-none before:mt-[6.5px] before:mr-1 before:box-border before:block before:h-1.5 before:w-2.5 before:rounded-tl-md before:border-t before:border-l before:border-blue-gray-200 before:transition-all after:pointer-events-none after:mt-[6.5px] after:ml-1 after:box-border after:block after:h-1.5 after:w-2.5 after:flex-grow after:rounded-tr-md after:border-t after:border-r after:border-blue-gray-200 after:transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:leading-[3.75] peer-placeholder-shown:text-blue-gray-500 peer-placeholder-shown:before:border-transparent peer-placeholder-shown:after:border-transparent peer-focus:text-[11px] peer-focus:leading-tight peer-focus:text-indigo-600 peer-focus:before:border-t-2 peer-focus:before:border-l-2 peer-focus:before:border-indigo-600 peer-focus:after:border-t-2 peer-focus:after:border-r-2 peer-focus:after:border-indigo-600 peer-disabled:text-transparent peer-disabled:before:border-transparent peer-disabled:after:border-transparent peer-disabled:peer-placeholder-shown:text-blue-gray-500"
@@ -193,11 +195,11 @@ export default {
                 id_collection: [],
                 rooms_active: [],
                 rooms: "",
-                
             },
             currentRoom: "",
             form: {
                 message: "",
+                search: "",
             },
             messageState: false,
         };
@@ -215,6 +217,20 @@ export default {
     },
 
     methods: {
+        searchUser() {
+            const AuthStr = "Bearer ".concat(userStore().access_token);
+            axios({
+                method: "get",
+                params: { query: this.form.search },
+                url: `/api/chat/admin/search`,
+                headers: { Authorization: AuthStr },
+            })
+                .then((res) => {
+                    this.chat.rooms = res.data;
+                })
+                .catch((err) => {});
+        },
+
         openChat(room) {
             this.currentRoom = room.id;
             this.chat.rooms_active.push(room.id);
@@ -229,7 +245,7 @@ export default {
             ) {
                 this.chat.paginateState = true;
                 let last_scrollT = this.$refs.chat_div.scrollTop;
-                
+
                 const AuthStr = "Bearer ".concat(userStore().access_token);
                 axios({
                     method: "GET",
@@ -246,8 +262,9 @@ export default {
                                 this.chat.id_collection.push(data.id);
                             }
                         });
-                        
-                        this.chat.collection.next_page_url = res.data.next_page_url;
+
+                        this.chat.collection.next_page_url =
+                            res.data.next_page_url;
                         this.chat.paginateState = false;
                         this.$refs.chat_div.scrollTop = last_scrollT - 55;
                     })
@@ -311,7 +328,7 @@ export default {
 
         loadNewMessages() {
             this.getChatMessages();
-            
+
             let vm = this;
             window.Echo.private("chat." + this.currentRoom).listen(
                 ".message.new",
@@ -374,7 +391,7 @@ export default {
     },
 
     updated() {
-        if(this.messageState) {
+        if (this.messageState) {
             this.$refs.chat_div.scrollTop = this.$refs.chat_div.scrollHeight;
             this.messageState = false;
         }

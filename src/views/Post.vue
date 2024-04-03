@@ -676,46 +676,6 @@ export default {
             });
         },
 
-        // morphAttachFiles() {
-        //     if (!this.$refs.attachFiles.files.length) {
-        //         return false;
-        //     }
-
-        //     this.form.post.attachments.images.temp_link = [];
-        //     this.form.post.attachments.files.name = [];
-
-        //     // let formData = new FormData();
-        //     for (
-        //         let index = 0;
-        //         index < this.$refs.attachFiles.files.length;
-        //         index++
-        //     ) {
-        //         if (
-        //             this.getFileFormat(
-        //                 this.$refs.attachFiles.files[index].name
-        //             ) == "png" ||
-        //             this.getFileFormat(
-        //                 this.$refs.attachFiles.files[index].name
-        //             ) == "jpeg" ||
-        //             this.getFileFormat(
-        //                 this.$refs.attachFiles.files[index].name
-        //             ) == "jpg"
-        //         ) {
-        //             this.form.post.attachments.images.temp_link.push(
-        //                 URL.createObjectURL(this.$refs.attachFiles.files[index])
-        //             );
-        //         } else {
-        //             this.form.post.attachments.files.name.push(
-        //                 this.$refs.attachFiles.files[index].name
-        //             );
-        //         }
-
-        //         // formData.append("files[]", this.$refs.attachFiles.files[index]);
-        //     }
-        //     this.form.post.attachments.isExist = true;
-        //     // this.form.post.formData = formData;
-        // },
-
         morphAttachFiles() {
             if (!this.$refs.attachFiles.files.length) {
                 return false;

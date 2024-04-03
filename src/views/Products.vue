@@ -119,7 +119,10 @@
                             <td class="px-6 py-4">
                                 <button
                                     class="font-medium text-blue-600"
-                                    @click="modal.updateProduct = true; modal.update_data = product"
+                                    @click="
+                                        modal.updateProduct = true;
+                                        modal.update_data = product;
+                                    "
                                 >
                                     Edit
                                 </button>
@@ -195,64 +198,72 @@
                         </div>
 
                         <div
-                            class="flex flex-row items-center gap-4 mb-4"
                             v-for="variant in form.addProduct.variant"
                             :key="variant"
+                            class="border p-4 mb-4 rounded"
                         >
-                            <div class="w-full">
-                                <input
-                                    :id="`variant_value_${variant}`"
-                                    ref="variant_value"
-                                    placeholder="Value"
-                                    type="number"
-                                    min="1"
-                                    max="5"
-                                    class="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
-                                />
+                            <div class="flex flex-row items-center gap-4 mb-4">
+                                <div class="w-full">
+                                    <input
+                                        :id="`variant_value_${variant}`"
+                                        ref="variant_value"
+                                        placeholder="Value"
+                                        type="number"
+                                        min="1"
+                                        max="5"
+                                        class="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
+                                    />
+                                </div>
+                                <div class="w-full">
+                                    <input
+                                        :id="`variant_unit_${variant}`"
+                                        ref="variant_unit"
+                                        placeholder="Unit"
+                                        type="text"
+                                        class="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
+                                    />
+                                </div>
+                                <div class="w-full">
+                                    <input
+                                        :id="`variant_price_${variant}`"
+                                        ref="variant_price"
+                                        placeholder="Price"
+                                        type="number"
+                                        min="1"
+                                        max="5"
+                                        class="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
+                                    />
+                                </div>
+                                <div class="w-full">
+                                    <input
+                                        type="number"
+                                        ref="variant_stock"
+                                        :id="`variant_stock_${variant}`"
+                                        placeholder="Stock"
+                                        min="1"
+                                        max="5"
+                                        class="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
+                                    />
+                                </div>
                             </div>
 
-                            <div class="w-full">
+                            <div class="flex flex-row gap-4 items-center">
                                 <input
-                                    :id="`variant_unit_${variant}`"
-                                    ref="variant_unit"
-                                    placeholder="Unit"
                                     type="text"
                                     class="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
+                                    placeholder="Stripe ID"
+                                    ref="variant_stripe_id"
+                                    :id="`variant_stripe_id_${variant}`"
                                 />
-                            </div>
-
-                            <div class="w-full">
-                                <input
-                                    :id="`variant_price_${variant}`"
-                                    ref="variant_price"
-                                    placeholder="Price"
-                                    type="number"
-                                    min="1"
-                                    max="5"
-                                    class="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
-                                />
-                            </div>
-
-                            <div class="w-full">
-                                <input
-                                    type="number"
-                                    ref="variant_stock"
-                                    :id="`variant_stock_${variant}`"
-                                    placeholder="Stock"
-                                    min="1"
-                                    max="5"
-                                    class="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
-                                />
-                            </div>
-
-                            <div class="">
-                                <button
-                                    class="border py-0.5 px-2 rounded-full focus:outline-none hover:bg-red-600"
-                                    type="button"
-                                    @click="deleteVariantDetails(variant)"
-                                >
-                                    <i class="fa-solid fa-minus"></i>
-                                </button>
+                                <div class="">
+                                    <button
+                                        class="border py-0.5 px-2 rounded-full focus:outline-none hover:bg-red-600"
+                                        type="button"
+                                        @click="deleteVariantDetails(variant)"
+                                    >
+                                        <i class="fa-solid fa-minus"></i>
+                                    </button>
+                                </div>
                             </div>
                         </div>
 
@@ -390,71 +401,69 @@
                             </div>
                         </div>
 
-                        <div class="mb-4">
+                        <!-- <div class="mb-4">
                             <button
                                 class="text-white bg-indigo-700 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded text-lg"
                                 type="button"
                             >
                                 <i class="fa-solid fa-plus mr-1"></i>Add Variant
                             </button>
-                        </div>
+                        </div> -->
 
-                        <div
-                            class="flex flex-row items-center gap-4 mb-4"
+                        <!-- <div
                             v-for="variant in modal.update_data.get_variants"
                             :key="variant.id"
+                            class="p-4 border rounded mb-2"
                         >
-                            <div class="w-full">
-                                <input
-                                    placeholder="value"
-                                    ref="variant_update_value"
-                                    type="number"
-                                    min="1"
-                                    :value="variant.value"
-                                    class="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
-                                />
+                            <div class="flex flex-row items-center gap-4 mb-4">
+                                <div class="w-full">
+                                    <input
+                                        placeholder="value"
+                                        ref="variant_update_value"
+                                        type="number"
+                                        min="1"
+                                        :value="variant.value"
+                                        class="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
+                                    />
+                                </div>
+                                <div class="w-full">
+                                    <input
+                                        ref="variant_update_unit"
+                                        :value="variant.unit"
+                                        placeholder="unit"
+                                        type="text"
+                                        class="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
+                                    />
+                                </div>
+                                <div class="w-full">
+                                    <input
+                                        ref="variant_update_price"
+                                        :value="variant.price"
+                                        placeholder="price"
+                                        type="number"
+                                        min="1"
+                                        class="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
+                                    />
+                                </div>
+                                <div class="w-full">
+                                    <input
+                                        type="number"
+                                        ref="variant_update_stock"
+                                        :value="variant.stock"
+                                        placeholder="stock"
+                                        class="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
+                                    />
+                                </div>
+                                <div class="">
+                                    <button
+                                        class="border py-0.5 px-2 rounded-full focus:outline-none hover:bg-red-600"
+                                        type="button"
+                                    >
+                                        <i class="fa-solid fa-minus"></i>
+                                    </button>
+                                </div>
                             </div>
-
-                            <div class="w-full">
-                                <input
-                                    ref="variant_update_unit"
-                                    :value="variant.unit"
-                                    placeholder="unit"
-                                    type="text"
-                                    class="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
-                                />
-                            </div>
-
-                            <div class="w-full">
-                                <input
-                                    ref="variant_update_price"
-                                    :value="variant.price"
-                                    placeholder="price"
-                                    type="number"
-                                    min="1"
-                                    class="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
-                                />
-                            </div>
-
-                            <div class="w-full">
-                                <input
-                                    type="number"
-                                    ref="variant_update_stock"
-                                    :value="variant.stock"
-                                    placeholder="stock"
-                                    class="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
-                                />
-                            </div>
-
-                            <div class="">
-                                <button
-                                    class="border py-0.5 px-2 rounded-full focus:outline-none hover:bg-red-600"
-                                    type="button"
-                                >
-                                    <i class="fa-solid fa-minus"></i>
-                                </button>
-                            </div>
-                        </div>
+                        </div> -->
 
                         <div class="flex flex-row gap-2 mb-8">
                             <div
@@ -734,21 +743,24 @@ export default {
             formData.append("id", this.modal.update_data.id);
             formData.append("name", this.$refs.update_product_name.value);
             formData.append("rating", this.$refs.update_product_rating.value);
-            formData.append("description", this.$refs.update_product_description.value);
+            formData.append(
+                "description",
+                this.$refs.update_product_description.value
+            );
             formData.append("image", this.form.updateProduct.image);
 
-            this.$refs.variant_update_value.forEach((data) => {
-                formData.append("variant_update_value[]", data.value);
-            });
-            this.$refs.variant_update_price.forEach((data) => {
-                formData.append("variant_update_price[]", data.value);
-            });
-            this.$refs.variant_update_stock.forEach((data) => {
-                formData.append("variant_update_stock[]", data.value);
-            });
-            this.$refs.variant_update_unit.forEach((data) => {
-                formData.append("variant_update_unit[]", data.value);
-            });
+            // this.$refs.variant_update_value.forEach((data) => {
+            //     formData.append("variant_update_value[]", data.value);
+            // });
+            // this.$refs.variant_update_price.forEach((data) => {
+            //     formData.append("variant_update_price[]", data.value);
+            // });
+            // this.$refs.variant_update_stock.forEach((data) => {
+            //     formData.append("variant_update_stock[]", data.value);
+            // });
+            // this.$refs.variant_update_unit.forEach((data) => {
+            //     formData.append("variant_update_unit[]", data.value);
+            // });
 
             const AuthStr = "Bearer ".concat(userStore().user.access_token);
             axios({
@@ -775,15 +787,17 @@ export default {
             axios({
                 method: "delete",
                 params: {
-                    id: this.selected,  
+                    id: this.selected,
                 },
                 url: `/api/products`,
                 headers: { Authorization: AuthStr },
             })
                 .then((res) => {
-                    this.products.data = this.products.data.filter((product) => {
-                        return !this.selected.includes(product.id);
-                    });
+                    this.products.data = this.products.data.filter(
+                        (product) => {
+                            return !this.selected.includes(product.id);
+                        }
+                    );
                     this.modal.deleteProduct = false;
                     this.selected = [];
                 })
@@ -816,13 +830,14 @@ export default {
                 formData.append("variant_price[]", data.value);
             });
 
+            this.$refs.variant_stripe_id.forEach((data) => {
+                formData.append("variant_stripe_id[]", data.value);
+            });
+
             const AuthStr = "Bearer ".concat(userStore().user.access_token);
             axios({
                 method: "post",
                 data: formData,
-                // params: {
-                //     variant_details: this.form.addProduct.variant_details,
-                // },
                 url: `/api/products`,
                 headers: { Authorization: AuthStr },
             })
@@ -872,7 +887,7 @@ export default {
                 this.form.updateProduct.image
             );
         },
-        
+
         selectAll(e) {
             if (e.target.checked) {
                 this.selected = [];
