@@ -58,7 +58,7 @@
                             class="block p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500"
                             placeholder="Search for users"
                             @keyup="searchUser"
-                            ref="search"
+                            v-model="form.search"
                         />
                     </div>
                 </div>
@@ -168,9 +168,9 @@
                                 <input
                                     type="text"
                                     id="first_name"
-                                    ref="first_name"
+                                    v-model="form.updateUser.first_name"
                                     class="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
-                                    :value="edit_user.first_name"
+                                    :placeholder="edit_user.first_name"
                                 />
                             </div>
                             <div class="relative mb-4 w-full">
@@ -182,9 +182,9 @@
                                 <input
                                     type="text"
                                     id="last_name"
-                                    ref="last_name"
+                                    v-model="form.updateUser.last_name"
                                     class="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
-                                    :value="edit_user.last_name"
+                                    :placeholder="edit_user.last_name"
                                 />
                             </div>
                         </div>
@@ -196,11 +196,12 @@
                                 >Email</label
                             >
                             <input
-                                type="text"
+                                type="email"
                                 id="email"
-                                ref="email"
+                                v-model="form.updateUser.email"
                                 class="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
-                                :value="edit_user.email"
+                                :placeholder="edit_user.email"
+                                autocomplete="off"
                             />
                         </div>
 
@@ -214,8 +215,9 @@
                                 <input
                                     type="password"
                                     id="password"
-                                    ref="password"
+                                    v-model="form.updateUser.password"
                                     class="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
+                                    autocomplete="off"
                                 />
                             </div>
                             <div class="relative mb-4 w-full">
@@ -227,7 +229,7 @@
                                 <input
                                     type="password"
                                     id="confirm_pass"
-                                    ref="confirm_password"
+                                    v-model="form.updateUser.confirm_password"
                                     class="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
                                 />
                             </div>
@@ -242,9 +244,9 @@
                             <input
                                 type="text"
                                 id="addr"
-                                ref="address"
+                                v-model="form.updateUser.address"
                                 class="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
-                                :value="edit_user.address"
+                                :placeholder="edit_user.address"
                             />
                         </div>
 
@@ -258,9 +260,9 @@
                                 <input
                                     type="number"
                                     id="contact"
-                                    ref="contact"
+                                    v-model="form.updateUser.contact"
                                     class="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
-                                    :value="edit_user.contact"
+                                    :placeholder="edit_user.contact"
                                 />
                             </div>
                             <div class="relative mb-4 w-full">
@@ -272,9 +274,9 @@
                                 <input
                                     type="date"
                                     id="bday"
-                                    ref="birthday"
+                                    v-model="form.updateUser.birthday"
                                     class="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
-                                    :value="edit_user.birthday"
+                                    :placeholder="edit_user.birthday"
                                 />
                             </div>
                         </div>
@@ -301,7 +303,7 @@
         <!-- add modal -->
         <Dialog
             :open="modal.add"
-            @close="initAddModal"
+            @close="initAddModal(false)"
             class="z-50 bg-opacity-50 fixed bg-black w-full p-4 overflow-x-hidden overflow-y-auto inset-0 max-h-full"
         >
             <DialogPanel
@@ -468,7 +470,7 @@
                 </div>
             </DialogPanel>
         </Dialog>
-        
+
         <!-- delete modal -->
         <Dialog
             :open="modal.delete"
@@ -512,13 +514,13 @@
                 </div>
             </DialogPanel>
         </Dialog>
-        
     </div>
 </template>
 <script>
 import Aside from "../components/Aside.vue";
 import { userStore } from "../stores/userStore";
 import Pagination from "../components/Pagination.vue";
+import { onMounted, ref, toRefs, watch, defineComponent } from "vue";
 
 import {
     Dialog,
@@ -530,33 +532,9 @@ import {
     MenuItems,
     MenuItem,
 } from "@headlessui/vue";
+import { reactive } from "vue";
 
-export default {
-    data() {
-        return {
-            users: "",
-            modal: {
-                add: false,
-                edit: false,
-                delete: false,
-            },
-            form: {
-                addUser: {
-                    first_name: "",
-                    last_name: "",
-                    email: "",
-                    address: "",
-                    contact: "",
-                    birthday: "",
-                    password: "",
-                    confirm_password: "",
-                    role: "",
-                },
-            },
-            edit_user: "",
-            selected_users: [],
-        };
-    },
+export default defineComponent({
     components: {
         Aside,
         Dialog,
@@ -570,103 +548,45 @@ export default {
         Pagination,
     },
 
-    props: {},
+    methods: {},
 
-    computed: {},
-
-    methods: {
-        nextPage(url) {
-            const AuthStr = "Bearer ".concat(userStore().user.access_token);
-            axios({
-                method: "get",
-                url: url,
-                headers: { Authorization: AuthStr },
-            })
-                .then((res) => {
-                    this.users = res.data;
-                })
-                .catch((err) => {});
-        },
-
-        prevPage(url) {
-            const AuthStr = "Bearer ".concat(userStore().user.access_token);
-            axios({
-                method: "get",
-                url: url,
-                headers: { Authorization: AuthStr },
-            })
-                .then((res) => {
-                    this.users = res.data;
-                })
-                .catch((err) => {});
-        },
-
-        goToPage(url, page) {
-            const AuthStr = "Bearer ".concat(userStore().user.access_token);
-            axios({
-                method: "get",
-                url: `${url}?page=${page}`,
-                headers: { Authorization: AuthStr },
-            })
-                .then((res) => {
-                    this.users = res.data;
-                })
-                .catch((err) => {});
-        },
-
-        deleteUser() {
-            const AuthStr = "Bearer ".concat(userStore().user.access_token);
-            axios({
-                method: "delete",
-                params: { id: this.selected_users },
-                url: `/api/users`,
-                headers: { Authorization: AuthStr },
-            })
-                .then((res) => {
-                    this.users.data = this.users.data.filter((user) => {
-                        return !this.selected_users.includes(user.id);
-                    });
-
-                    this.selected_users = [];
-                    this.modal.delete = false;
-                })
-                .catch((err) => {});
-        },
-
-        createUser(e) {
-            e.target.disabled = true;
-            axios({
-                method: "post",
-                url: `/api/users`,
-                params: {
-                    first_name: this.form.addUser.first_name,
-                    last_name: this.form.addUser.last_name,
-                    email: this.form.addUser.email,
-                    password: this.form.addUser.password,
-                    confirm_password: this.form.addUser.confirm_password,
-                    contact: this.form.addUser.contact,
-                    address: this.form.addUser.address,
-                    birthday: this.form.addUser.birthday,
-                    role: this.form.addUser.role,
+    setup() {
+        const data = reactive({
+            users: "",
+            edit_user: "",
+            selected_users: [],
+            form: {
+                addUser: {
+                    first_name: "",
+                    last_name: "",
+                    email: "",
+                    password: "",
+                    confirm_password: "",
+                    contact: "",
+                    address: "",
+                    birthday: "",
+                    role: "",
                 },
-                headers: {
-                    Authorization: `Bearer`.concat(
-                        userStore().user.access_token
-                    ),
+                updateUser: {
+                    first_name: "",
+                    last_name: "",
+                    email: "",
+                    password: "",
+                    confirm_password: "",
+                    contact: "",
+                    address: "",
+                    birthday: "",
                 },
-            })
-                .then((res) => {
-                    this.users.data.unshift(res.data);
-                    this.modal.add = false;
-                    e.target.disabled = false;
-                })
-                .catch((err) => {
-                    e.target.disabled = false;
-                    console.log(err.response);
-                });
-        },
+                search: "",
+            },
+            modal: {
+                add: false,
+                edit: false,
+                delete: false,
+            },
+        });
 
-        getAllUsers() {
+        function getAllUsers() {
             axios({
                 method: "get",
                 url: `${import.meta.env.VITE_API_URL}/api/users`,
@@ -677,116 +597,235 @@ export default {
                 },
             })
                 .then((res) => {
-                    this.users = res.data;
+                    data.users = res.data;
                 })
                 .catch((err) => {
                     console.log(err.response.data);
                 });
-        },
+        }
 
-        initEditModal(value, user) {
-            this.modal.edit = value;
-            this.edit_user = user;
-        },
+        function prevPage(url) {
+            const AuthStr = "Bearer ".concat(userStore().user.access_token);
+            axios({
+                method: "get",
+                url: url,
+                headers: { Authorization: AuthStr },
+            })
+                .then((res) => {
+                    this.users = res.data;
+                })
+                .catch((err) => {});
+        }
 
-        initAddModal(value) {
-            this.modal.add = value;
-        },
-        
-        initDeleteModal(value) {
-            this.modal.delete = value;
-        },
+        function selectAll(e) {
+            if (e.target.checked) {
+                data.users.data.forEach((user) => {
+                    if (!data.selected_users.includes(user.id)) {
+                        data.selected_users.push(user.id);
+                    }
+                });
+            } else {
+                data.selected_users = [];
+            }
+        }
 
-        updateUser() {
+        function nextPage(url) {
+            const AuthStr = "Bearer ".concat(userStore().user.access_token);
+            axios({
+                method: "get",
+                url: url,
+                headers: { Authorization: AuthStr },
+            })
+                .then((res) => {
+                    this.users = res.data;
+                })
+                .catch((err) => {});
+        }
+
+        function prevPage(url) {
+            const AuthStr = "Bearer ".concat(userStore().user.access_token);
+            axios({
+                method: "get",
+                url: url,
+                headers: { Authorization: AuthStr },
+            })
+                .then((res) => {
+                    this.users = res.data;
+                })
+                .catch((err) => {});
+        }
+
+        function goToPage(url, page) {
+            const AuthStr = "Bearer ".concat(userStore().user.access_token);
+            axios({
+                method: "get",
+                url: `${url}?page=${page}`,
+                headers: { Authorization: AuthStr },
+            })
+                .then((res) => {
+                    this.users = res.data;
+                })
+                .catch((err) => {});
+        }
+
+        function initAddModal(value) {
+            data.modal.add = value;
+        }
+
+        function initDeleteModal(value) {
+            data.modal.delete = value;
+        }
+
+        function initEditModal(value, user) {
+            data.modal.edit = value;
+            data.edit_user = user;
+        }
+
+        function createUser(e) {
+            e.target.disabled = true;
+            axios({
+                method: "post",
+                url: `/api/users`,
+                params: {
+                    first_name: data.form.addUser.first_name,
+                    last_name: data.form.addUser.last_name,
+                    email: data.form.addUser.email,
+                    password: data.form.addUser.password,
+                    confirm_password: data.form.addUser.confirm_password,
+                    contact: data.form.addUser.contact,
+                    address: data.form.addUser.address,
+                    birthday: data.form.addUser.birthday,
+                    role: data.form.addUser.role,
+                },
+                headers: {
+                    Authorization: `Bearer`.concat(
+                        userStore().user.access_token
+                    ),
+                },
+            })
+                .then((res) => {
+                    data.users.data.unshift(res.data);
+                    data.modal.add = false;
+                    e.target.disabled = false;
+                })
+                .catch((err) => {
+                    e.target.disabled = false;
+                    console.log(err.response);
+                });
+        }
+
+        function searchUser(e) {
+            if (e.keyCode == 13) {
+                if (data.form.search == null) {
+                    getAllUsers();
+                } else {
+                    const AuthStr = "Bearer ".concat(
+                        userStore().user.access_token
+                    );
+                    axios({
+                        method: "get",
+                        params: { query: data.form.search },
+                        url: `/api/users/search`,
+                        headers: { Authorization: AuthStr },
+                    })
+                        .then((res) => {
+                            data.users = res.data;
+                        })
+                        .catch((err) => {});
+                }
+            }
+        }
+
+        function deleteUser() {
+            const AuthStr = "Bearer ".concat(userStore().user.access_token);
+            axios({
+                method: "delete",
+                params: { id: data.selected_users },
+                url: `/api/users`,
+                headers: { Authorization: AuthStr },
+            })
+                .then((res) => {
+                    data.users.data = data.users.data.filter((user) => {
+                        return !data.selected_users.includes(user.id);
+                    });
+
+                    data.selected_users = [];
+                    data.modal.delete = false;
+                })
+                .catch((err) => {});
+        }
+
+        function updateUser() {
             const AuthStr = "Bearer ".concat(userStore().user.access_token);
             axios({
                 method: "patch",
-                url: `/api/users/${this.edit_user.id}`,
+                url: `/api/users/${data.edit_user.id}`,
                 params: {
-                    first_name: this.$refs.first_name.value,
-                    last_name: this.$refs.last_name.value,
-                    email: this.$refs.email.value,
-                    password: this.$refs.password.value,
-                    confirm_password: this.$refs.confirm_password.value,
-                    address: this.$refs.address.value,
-                    contact: this.$refs.contact.value,
-                    birthday: this.$refs.birthday.value,
+                    first_name: data.form.updateUser.first_name
+                        ? data.form.updateUser.first_name
+                        : data.edit_user.first_name,
+                    last_name: data.form.updateUser.last_name
+                        ? data.form.updateUser.last_name
+                        : data.edit_user.last_name,
+                    email: data.form.updateUser.email
+                        ? data.form.updateUser.email
+                        : data.edit_user.email,
+                    password: data.form.updateUser.password
+                        ? data.form.updateUser.password
+                        : data.edit_user.password,
+                    confirm_password: data.form.updateUser.confirm_password
+                        ? data.form.updateUser.confirm_password
+                        : data.edit_user.confirm_password,
+                    address: data.form.updateUser.address
+                        ? data.form.updateUser.address
+                        : data.edit_user.address,
+                    contact: data.form.updateUser.contact
+                        ? data.form.updateUser.contact
+                        : data.edit_user.contact,
+                    birthday: data.form.updateUser.birthday
+                        ? data.form.updateUser.birthday
+                        : data.edit_user.birthday,
                 },
                 headers: { Authorization: AuthStr },
             })
                 .then((res) => {
-                    this.modal.edit = false;
-                    this.users.data.forEach((user, index) => {
-                        if (user.id == this.edit_user.id) {
-                            this.users.data[index] = res.data;
+                    data.modal.edit = false;
+                    data.users.data.forEach((user, index) => {
+                        if (user.id == data.edit_user.id) {
+                            data.users.data[index] = res.data;
                         }
                     });
-                    this.edit_user = "";
+                    data.edit_user = "";
                 })
                 .catch((err) => {
                     console.log(err.response.data.message);
                 });
-        },
+        }
 
-        searchUser() {
-            if (this.$refs.search.value == null) {
-                this.getAllUsers();
-            } else {
-                const AuthStr = "Bearer ".concat(userStore().user.access_token);
-                axios({
-                    method: "get",
-                    params: { query: this.$refs.search.value },
-                    url: `/api/users/search`,
-                    headers: { Authorization: AuthStr },
-                })
-                    .then((res) => {
-                        console.log(res.data);
-                        this.users = res.data;
-                    })
-                    .catch((err) => {});
-            }
-        },
+        watch(data, (val) => {
+            console.log(val);
+        });
 
-        selectAll(e) {
-            if (e.target.checked) {
-                this.users.data.forEach((user) => {
-                    if (!this.selected_users.includes(user.id)) {
-                        this.selected_users.push(user.id);
-                    }
-                });
-            } else {
-                this.selected_users = [];
-            }
-        },
+        onMounted(() => {
+            getAllUsers();
+        });
+
+        return {
+            selectAll,
+            prevPage,
+            goToPage,
+            nextPage,
+            createUser,
+            initAddModal,
+            searchUser,
+            initDeleteModal,
+            initEditModal,
+            deleteUser,
+            updateUser,
+            ...toRefs(data),
+        };
     },
-
-    watch: {
-        $data: {
-            handler: function (val, oldVal) {
-                console.log("watcher: ", val);
-            },
-            deep: true,
-        },
-
-        $props: {
-            handler: function (val, oldVal) {
-                console.log("watcher: ", val);
-            },
-            deep: true,
-        },
-        some_prop: function () {
-            //do something if some_prop updated
-        },
-    },
-
-    updated() {},
-
-    beforeMounted() {},
-
-    mounted() {
-        this.getAllUsers();
-    },
-};
+});
 </script>
 
 <style scoped>
