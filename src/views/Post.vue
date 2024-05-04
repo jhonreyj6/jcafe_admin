@@ -129,7 +129,7 @@
             >
                 <div class="flex flex-row gap-4 pl-4 pr-4 pt-4 pb-2">
                     <img
-                        :src="post.get_user_details.image_url"
+                        :src="getPostUserAvatar(post)"
                         alt=""
                         width="50"
                         height="50"
@@ -553,6 +553,12 @@ export default {
     computed: {},
 
     methods: {
+        getPostUserAvatar(post) {
+            return post.get_user_details.profile_image
+                ? post.get_user_details.image_url
+                : "https://cdn.icon-icons.com/icons2/2643/PNG/512/male_boy_person_people_avatar_icon_159358.png";
+        },
+
         handleScroll(event) {
             if (
                 window.scrollY + 100 >

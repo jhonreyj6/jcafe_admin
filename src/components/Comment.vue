@@ -7,7 +7,7 @@
         >
             <div class="flex flex-row gap-4">
                 <img
-                    :src="comment.user_details.image_url"
+                    :src="getCommentUserAvatar(comment)"
                     alt=""
                     class="rounded-full w-12 h-12"
                 />
@@ -146,14 +146,18 @@ export default {
         },
         sort: {
             type: String,
-        }
+        },
     },
 
-    computed: {
-        
-    },
+    computed: {},
 
     methods: {
+        getCommentUserAvatar(comment) {
+            return comment.user_details.profile_img
+                ? comment.user_details.image_url
+                : "https://cdn.icon-icons.com/icons2/2643/PNG/512/male_boy_person_people_avatar_icon_159358.png";
+        },
+
         cancelEdit(post_id) {
             this.form.comment.edit.data = "";
             document.getElementById(`comment_message_${post_id}`).textContent =
@@ -314,7 +318,7 @@ export default {
             })
                 .then((res) => {
                     this.comments = res.data;
-                    if(condition) {
+                    if (condition) {
                         this.collection.comments_id = [];
                     }
                     this.comments.data.forEach((comment) => {
@@ -324,7 +328,6 @@ export default {
                     });
 
                     this.post.comment_counts = this.comments.total;
-
                 })
                 .catch((err) => {
                     console.log(err.response.data.message);
