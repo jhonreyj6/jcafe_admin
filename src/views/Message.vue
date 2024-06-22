@@ -52,8 +52,8 @@
                                     <h3
                                         class="text-1xl text-indigo-700 font-bold"
                                     >
-                                        {{ room.get_user_details.first_name }}
-                                        {{ room.get_user_details.last_name }}
+                                        {{ room.get_user_details?.first_name }}
+                                        {{ room.get_user_details?.last_name }}
                                     </h3>
                                     <div
                                         class="ms-auto text-white text-sm bg-red-500 px-2 py-0.5 rounded-full"
